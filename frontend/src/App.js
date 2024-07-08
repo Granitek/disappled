@@ -1,11 +1,20 @@
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import Leopard from './pages/Leopard';
 
-function App() {
+const App = () => {
   return (
-    <div>
-      Siema
-    </div>
+    <Router>
+      <Layout>
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route path="/Leopard" element={<Leopard />} />
+        </Routes>
+      </Layout>
+    </Router>
   );
-}
+};
 
 export default App;
