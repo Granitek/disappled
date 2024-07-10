@@ -1,1 +1,10 @@
 .env
+db.sqlite3
+
+# Pliki kompilowane Pythona
+__pycache__/
+*.pyc
+*.pyo
+*.log
+
+.vscode/
