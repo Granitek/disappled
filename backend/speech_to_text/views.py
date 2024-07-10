@@ -10,7 +10,7 @@ from django.conf import settings
 
 
 @csrf_exempt
-def convert_audio_to_text(request):
+def convert_prerecorded_audio_to_text(request):
     if request.method == 'POST' and request.FILES.get('audioFile'):
         try:
             # save file to server
