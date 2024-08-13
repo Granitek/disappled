@@ -9,6 +9,7 @@ pvleopard = "*"
 django-environ = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
+pvcheetah = "*"
 
 [dev-packages]
 
