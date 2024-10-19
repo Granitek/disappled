@@ -30,7 +30,7 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 # Pobieranie klucza ACCESS_KEY
 ACCESS_KEY = env('ACCESS_KEY')
 
-DEBUG = env('DEBUG')
+DEBUG = True
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -55,6 +55,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'speech_to_text',
     'corsheaders',
+    'rest_framework',
+    'posts',
+    'users'
 ]
 
 MIDDLEWARE = [

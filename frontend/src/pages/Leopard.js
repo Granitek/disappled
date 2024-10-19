@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Box, Card, Typography, Divider, CardContent, Button } from '@mui/material';
+import UploadButton from '../components/UploadButton';
 
 const Leopard = () => {
     const [selectedFile, setSelectedFile] = useState(null);
@@ -25,16 +27,30 @@ const Leopard = () => {
             console.error('Error uploading file: ', error);
         }
     };
+
     return (
-        <div className="App">
-            <h1>Przekształć audio na tekst</h1>
-            <input type="file" onChange={handleFileChange} />
-            <button onClick={handleUpload}>Prześlij audio</button>
-            <div>
-                <h2>Przekonwertowany tekst:</h2>
-                <p>{transcript}</p>
-            </div>
-        </div>
+        <Card variant="outlined">
+            <CardContent>
+                <Typography variant="h4" style={{ textAlign: 'center' }}>
+                    Przekształć audio na tekst
+                </Typography>
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+                    <UploadButton handleFileChange={handleFileChange} />
+                    <Button onClick={handleUpload}>Prześlij audio</Button>
+                </Box>
+                <Divider />
+                <Typography variant="h4" style={{ textAlign: 'center' }}>
+                    Przekonwertowany tekst:
+                </Typography>
+                <Typography variant="h5" style={{ textAlign: 'center' }}>
+                    {transcript}
+                </Typography>
+            </CardContent>
+        </Card>
     );
 };
 
