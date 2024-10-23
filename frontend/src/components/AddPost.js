@@ -43,6 +43,8 @@ const AddPost = ({ onPostAdded }) => {
         }
     };
 
+    const token = localStorage.getItem('access_token');
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -54,7 +56,11 @@ const AddPost = ({ onPostAdded }) => {
             content: content,
         };
 
-        axios.post('http://localhost:8000/api/posts/', newPost)
+        axios.post('http://localhost:8000/api/posts/', newPost, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then(response => {
                 onPostAdded(response.data);
                 setTitle('');

@@ -128,20 +128,46 @@ def convert_prerecorded_audio_to_text(request):
 
 #     return JsonResponse({'error': "Method not allowed or no audio data provided."}, status=405)
 
-from rest_framework import status
 
-@api_view(['POST'])
+# ZAKOMENTOWANE 19.10
+
+
+# from rest_framework import status
+
+# @api_view(['POST'])
+# def convert_audio_to_text(request):
+#     audio_data = request.data.get('audioData')
+
+#     if not audio_data:
+#         return Response({'error': 'Missing audio data'}, status=status.HTTP_400_BAD_REQUEST)
+
+#     try:
+#         # cheetah_instance = cheetah_sdk.Cheetah(access_key, model_path)
+#         cheetah_instance = create_cheetah(access_key=settings.ACCESS_KEY)
+#         transcript = cheetah_instance.process(audio_data)
+#         cheetah_instance.release()
+#         return Response({'transcript': transcript}, status=status.HTTP_200_OK)
+#     except Exception as e:
+#         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+cheetah = create_cheetah(access_key=settings.ACCESS_KEY)
+
+@csrf_exempt
 def convert_audio_to_text(request):
-    audio_data = request.data.get('audioData')
+    if request.method == 'POST':
+        try:
+            audio_data = request.FILES['audio'].read()  # Oczekiwanie na plik audio w formacie .wav lub podobnym
+            audio_stream = io.BytesIO(audio_data)
 
-    if not audio_data:
-        return Response({'error': 'Missing audio data'}, status=status.HTTP_400_BAD_REQUEST)
+            # Procesowanie audio za pomocą Cheetah
+            partial_transcript, is_endpoint = cheetah.process(audio_stream)
 
-    try:
-        # cheetah_instance = cheetah_sdk.Cheetah(access_key, model_path)
-        cheetah_instance = create_cheetah(access_key=settings.ACCESS_KEY)
-        transcript = cheetah_instance.process(audio_data)
-        cheetah_instance.release()
-        return Response({'transcript': transcript}, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            if is_endpoint:
+                final_transcript = cheetah.flush()
+                return JsonResponse({'transcript': final_transcript})
+
+            return JsonResponse({'partial_transcript': partial_transcript})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'message': 'Send a POST request with an audio file.'}, status=400)

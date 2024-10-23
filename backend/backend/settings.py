@@ -43,6 +43,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
+SITE_ID = 1
 
 # Application definition
 
@@ -56,8 +57,12 @@ INSTALLED_APPS = [
     'speech_to_text',
     'corsheaders',
     'rest_framework',
+    'rest_framework_simplejwt',
     'posts',
-    'users'
+    'users',
+    'rest_framework.authtoken',  # To dodajemy dla obsługi tokenów
+    'dj_rest_auth',  # Jeśli jeszcze nie ma, dodajemy obsługę auth
+    'django.contrib.sites',  # Potrzebne dla allauth (używane w dj-rest-auth)
 ]
 
 MIDDLEWARE = [
@@ -149,8 +154,26 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
 ]
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_RENDERER_CLASSES': (
+#         'rest_framework.renderers.JSONRenderer',
+#     )
+# }
+
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-    )
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }

@@ -17,12 +17,12 @@ function WakeWords(props) {
 
     const porcupineKeyword = {
         publicPath: '/wakewords/add-post_en_wasm_v3_0_0.ppn',
-        label: "add post", // An arbitrary string used to identify the keyword once the detection occurs.
+        label: "add post",
     }
 
     const porcupineKeyword1 = {
         publicPath: '/wakewords/blueberry_wasm.ppn',
-        label: "edit post", // An arbitrary string used to identify the keyword once the detection occurs.
+        label: "edit post",
     }
 
     const porcupineModel = { publicPath: '/model/porcupine_params.pv', }
@@ -38,7 +38,7 @@ function WakeWords(props) {
 
     useEffect(() => {
         if (isLoaded) {
-            start();  // Rozpocznij nasłuchiwanie po załadowaniu
+            start();
         }
     }, [isLoaded]);
 
@@ -58,7 +58,7 @@ function WakeWords(props) {
 
     useEffect(() => {
         return () => {
-            release();  // Zwolnij zasoby po zakończeniu
+            release();
         };
     }, []);
 
@@ -75,8 +75,6 @@ function WakeWords(props) {
             <h2>{isListening ? "Listening..." : "Not listening"}</h2>
         </div>
     );
-
-    // ... render component
 }
 
 export default WakeWords;

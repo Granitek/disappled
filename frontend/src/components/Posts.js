@@ -15,11 +15,16 @@ const Posts = ({ onPostDeleted }) => {
         navigate(`/EditPost/${id}`);
     };
 
+    const token = localStorage.getItem('access_token');
+
     const handleDeleteClick = (id) => {
-        axios.delete(`http://localhost:8000/api/posts/${id}/`)
+        axios.delete(`http://localhost:8000/api/posts/${id}/`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then(() => {
                 onPostDeleted(id);
-                navigate('/Posts');
             })
             .catch(error => {
                 console.error('There was an error deleting the post!', error);

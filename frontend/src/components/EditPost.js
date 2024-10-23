@@ -48,6 +48,8 @@ const EditPost = () => {
         setAudioFile(e.target.files[0]);
     };
 
+    const token = localStorage.getItem('access_token');
+
     const handleTranscription = async () => {
         if (!audioFile) return;
 
@@ -61,6 +63,7 @@ const EditPost = () => {
             const response = await axios.post('http://localhost:8000/Leopard/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
                 },
             });
 
