@@ -6,22 +6,24 @@ const useFetch = (url) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(url);
+    const fetchData = () => {
+        setLoading(true);
+        axios.get(url)
+            .then((response) => {
                 setData(response.data);
-            } catch (err) {
-                setError(err);
-            } finally {
                 setLoading(false);
-            }
-        };
+            })
+            .catch((error) => {
+                setError(error);
+                setLoading(false);
+            })
+    }
 
+    useEffect(() => {
         fetchData();
     }, [url]);
 
-    return { data, loading, error };
+    return { data, loading, error, refetch: fetchData };
 };
 
 export default useFetch;

@@ -5,8 +5,10 @@ import { Button, Card, CardMedia, CardContent, Typography } from '@mui/material'
 import axios from 'axios'
 
 const Posts = ({ onPostDeleted }) => {
-    const { data: posts, loading, error } = useFetch('http://localhost:8000/api/posts/');
+    const { data: posts, loading, error, refetch } = useFetch('http://localhost:8000/api/posts/');
     const navigate = useNavigate();
+    const token = localStorage.getItem('access_token');
+    const loggedInUserId = localStorage.getItem('user_id');
 
     if (loading) return <p>Loading posts...</p>;
     if (error) return <p>There was an error loading the posts.</p>;
@@ -15,8 +17,6 @@ const Posts = ({ onPostDeleted }) => {
         navigate(`/EditPost/${id}`);
     };
 
-    const token = localStorage.getItem('access_token');
-
     const handleDeleteClick = (id) => {
         axios.delete(`http://localhost:8000/api/posts/${id}/`, {
             headers: {
@@ -24,7 +24,8 @@ const Posts = ({ onPostDeleted }) => {
             }
         })
             .then(() => {
-                onPostDeleted(id);
+                // onPostDeleted(id);
+                refetch();
             })
             .catch(error => {
                 console.error('There was an error deleting the post!', error);
@@ -52,21 +53,26 @@ const Posts = ({ onPostDeleted }) => {
                             <Typography variant="body2" color="text.secondary">
                                 {post.content}
                             </Typography>
-                            <Button
-                                variant="outlined"
-                                onClick={() => handleEditClick(post.id)}
-                                style={{ marginTop: '10px' }}
-                            >
-                                Edit
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => handleDeleteClick(post.id)}
-                                style={{ marginTop: '10px' }}
-                            >
-                                Delete
-                            </Button>
+                            <Typography variant="body2" color="text.secondary">
+                                {post.author}
+                            </Typography>
+                            {post.author == loggedInUserId && (<>
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => handleEditClick(post.id)}
+                                    style={{ marginTop: '10px' }}
+                                >
+                                    Edit
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() => handleDeleteClick(post.id)}
+                                    style={{ marginTop: '10px' }}
+                                >
+                                    Delete
+                                </Button>
+                            </>)}
                         </CardContent>
                     </Card>
                 ))

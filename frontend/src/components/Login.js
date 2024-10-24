@@ -13,7 +13,7 @@ const Login = ({ setUser }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8000/api/token/', {
+        axios.post('http://localhost:8000/users/login/', {
             username: username,
             password: password
         })
@@ -21,6 +21,7 @@ const Login = ({ setUser }) => {
                 // Zapisz token JWT w localStorage lub state, tutaj użyjemy localStorage
                 localStorage.setItem('access_token', response.data.access);
                 localStorage.setItem('refresh_token', response.data.refresh);
+                localStorage.setItem('user_id', response.data.user.id);
 
                 // Opcjonalnie, można ustawić użytkownika, jeśli API zwraca dodatkowe informacje o użytkowniku
                 setUser(username); // Przechowuje tylko nazwę użytkownika

@@ -10,6 +10,7 @@ const Logout = ({ setUser }) => {
         // Usuń tokeny JWT z localStorage
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
+        localStorage.removeItem('user_id');
 
         // Wyczyszczenie użytkownika
         setUser(null);

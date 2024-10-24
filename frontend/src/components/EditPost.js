@@ -34,7 +34,11 @@ const EditPost = () => {
 
         const updatedPost = { title, content };
 
-        axios.put(`http://localhost:8000/api/posts/${id}/`, updatedPost)
+        axios.put(`http://localhost:8000/api/posts/${id}/`, updatedPost, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+        })
             .then(() => {
                 navigate('/Posts');
             })
