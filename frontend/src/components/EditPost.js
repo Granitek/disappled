@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 import UploadButton from './UploadButton';
+import WakeWords from './WakeWords';
 
 const EditPost = () => {
     const { id } = useParams();
@@ -84,7 +85,8 @@ const EditPost = () => {
     if (loading) return <CircularProgress />;
     if (error) return <p>{error}</p>;
 
-    return (
+    return (<>
+        <WakeWords />
         <form onSubmit={handleUpdate}>
             <div>
                 <TextField
@@ -116,6 +118,7 @@ const EditPost = () => {
                 Update Post
             </Button>
         </form>
+    </>
     );
 };
 

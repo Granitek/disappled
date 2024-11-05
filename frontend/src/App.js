@@ -11,6 +11,10 @@ import EditPost from './components/EditPost';
 import Cheetahtest from './components/cheetahtest';
 import Login from './components/Login';
 import Logout from './components/Logout';
+import Register from './components/Register';
+import Profile from './components/Profile';
+import SpeechRecognitionComponent from './components/TestSpeechRecognition';
+import WakeWords from './components/WakeWords';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
@@ -31,6 +35,17 @@ const App = () => {
     }
   }, []);
 
+
+  const [startRecognition, setStartRecognition] = useState(false);
+
+  const handleWakeWordDetection = () => {
+    // Funkcja uruchamiana po wykryciu słowa kluczowego, włączająca rozpoznawanie mowy
+    setStartRecognition(true);
+
+    // Opcjonalnie, możesz ustawić automatyczne wyłączenie po pewnym czasie:
+    // setTimeout(() => setStartRecognition(false), 5000); // Przykładowo 5 sekund
+  };
+
   return (
     <Router>
       <Layout>
@@ -50,6 +65,11 @@ const App = () => {
           <Route path="/Posts" element={<Posts posts={posts} user={user} onPostDeleted={handlePostDeleted} />} />
           {/* <Route path="/Posts" element={<Posts onPostDeleted={handlePostDeleted} />} /> */}
           <Route path="/cheetahtest" element={<Cheetahtest />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={user ? <Profile /> : <Navigate to="/Login" />} />
+          <Route path='/testt' element={<>
+            <WakeWords onWakeWordDetected={handleWakeWordDetection} />
+            <SpeechRecognitionComponent startRecognition={startRecognition} /></>} />
         </Routes>
       </Layout>
     </Router>

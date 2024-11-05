@@ -22,6 +22,9 @@ const Navbar = () => {
                     <Button color="inherit" component={Link} to="/Text">
                         Text
                     </Button>
+                    <Button color="inherit" component={Link} to="/profile">
+                        Your profile
+                    </Button>
                     <Button color="inherit" component={Link} to="/logout">
                         Logout
                     </Button>
