@@ -1,23 +1,17 @@
-// src/Logout.js
-
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
-const Logout = ({ setUser }) => {
+const Logout = () => {
+    const { logout } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Usuń tokeny JWT z localStorage
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('user_id');
-
-        // Wyczyszczenie użytkownika
-        setUser(null);
+        logout();
 
         // Przekierowanie na stronę logowania
         navigate('/login');
-    }, [setUser, navigate]);
+    }, [logout, navigate]);
 
     return null; // Nie musisz nic renderować, ponieważ to czysto funkcjonalny komponent
 };

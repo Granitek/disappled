@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { usePorcupine } from "@picovoice/porcupine-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import axios from 'axios'
-import SpeechRecognitionComponent from "./TestSpeechRecognition";
+import SpeechRecognition from "./SpeechRecognition";
 
 function WakeWords({ onWakeWordDetected }) {
     const navigate = useNavigate();
@@ -10,7 +10,7 @@ function WakeWords({ onWakeWordDetected }) {
     const location = useLocation();
     const token = localStorage.getItem('access_token');
 
-    // const [startSpeechRecognition, setStartSpeechRecognition] = useState(false);
+    const [startSpeechRecognition, setStartSpeechRecognition] = useState(false);
 
     const {
         keywordDetection,
@@ -28,14 +28,18 @@ function WakeWords({ onWakeWordDetected }) {
             publicPath: '/wakewords/add-post_en_wasm_v3_0_0.ppn',
             label: "add post",
         },
-        // {
-        //     publicPath: '/wakewords/blueberry_wasm.ppn',
-        //     label: "edit post",
-        // },
+        {
+            publicPath: '/wakewords/americano_wasm.ppn',
+            label: "speech recognition",
+        },
         {
             publicPath: '/wakewords/blueberry_wasm.ppn',
+            label: "blueberry",
+        },
+        {
+            publicPath: '/wakewords/terminator_wasm.ppn',
             label: "delete",
-        }
+        },
     ]
 
     const porcupineModel = { publicPath: '/model/porcupine_params.pv', }
@@ -61,11 +65,10 @@ function WakeWords({ onWakeWordDetected }) {
             console.log(keywordDetection.label)
             if (keywordDetection.label === "add post") {
                 navigate('/AddPosts');
-                // onWakeWordDetected()
                 stop()
             }
-            if (keywordDetection.label === "edit post") {
-                navigate('/EditPost/');
+            if (keywordDetection.label === "speech recognition") {
+                onWakeWordDetected();
                 stop()
             }
             if (keywordDetection.label === "delete" && location.pathname === `/EditPost/${id}`) {
@@ -110,7 +113,7 @@ function WakeWords({ onWakeWordDetected }) {
     return (
         <div>
             <h2>{isListening ? "Listening..." : "Not listening"}</h2>
-            {/* <SpeechRecognitionComponent startRecognition={startSpeechRecognition} /> */}
+            {/* <SpeechRecognition startRecognition={startSpeechRecognition} /> */}
         </div>
     );
 }

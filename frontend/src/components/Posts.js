@@ -3,12 +3,12 @@ import useFetch from '../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardMedia, CardContent, Typography } from '@mui/material';
 import axios from 'axios'
+import { useAuth } from '../hooks/useAuth';
 
 const Posts = ({ onPostDeleted }) => {
     const { data: posts, loading, error, refetch } = useFetch('http://localhost:8000/api/posts/');
     const navigate = useNavigate();
-    const token = localStorage.getItem('access_token');
-    const loggedInUserId = localStorage.getItem('user_id');
+    const { user, token } = useAuth();
 
     if (loading) return <p>Loading posts...</p>;
     if (error) return <p>There was an error loading the posts.</p>;
@@ -56,7 +56,7 @@ const Posts = ({ onPostDeleted }) => {
                             <Typography variant="body2" color="text.secondary">
                                 {post.author}
                             </Typography>
-                            {post.author == loggedInUserId && (<>
+                            {user && post.author == user.id && (<>
                                 <Button
                                     variant="outlined"
                                     onClick={() => handleEditClick(post.id)}

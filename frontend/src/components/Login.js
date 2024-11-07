@@ -1,45 +1,63 @@
-// src/Login.js
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const Login = ({ setUser }) => {
+    const { login } = useAuth();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    // const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        axios.post('http://localhost:8000/users/login/', {
-            username: username,
-            password: password
-        })
-            .then((response) => {
-                // Zapisz token JWT w localStorage lub state, tutaj użyjemy localStorage
-                localStorage.setItem('access_token', response.data.access);
-                localStorage.setItem('refresh_token', response.data.refresh);
-                localStorage.setItem('user_id', response.data.user.id);
-
-                // Opcjonalnie, można ustawić użytkownika, jeśli API zwraca dodatkowe informacje o użytkowniku
-                setUser(username); // Przechowuje tylko nazwę użytkownika
-
-                // Przekierowanie na stronę z postami
-                navigate('/Posts');
-            })
-            .catch((error) => {
-                setError('Login failed. Please check your credentials.');
-            });
+        try {
+            const response = await axios.post('http://localhost:8000/users/login/', { username, password });
+            console.log('Login response:', response.data);
+            const { user, access: token } = response.data;
+            if (token) {
+                login(user, token); // Zaktualizuj kontekst, jeśli token jest dostępny
+                navigate('/profile'); // Przekieruj na profil po zalogowaniu
+            } else {
+                console.error('Token is missing in the response');
+            }
+        } catch (error) {
+            console.error('Login failed', error);
+        }
     };
+
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     axios.post('http://localhost:8000/users/login/', {
+    //         username: username,
+    //         password: password
+    //     })
+    //         .then((response) => {
+    //             // Zapisz token JWT w localStorage lub state, tutaj użyjemy localStorage
+    //             localStorage.setItem('access_token', response.data.access);
+    //             localStorage.setItem('refresh_token', response.data.refresh);
+    //             localStorage.setItem('user_id', response.data.user.id);
+
+    //             // Opcjonalnie, można ustawić użytkownika, jeśli API zwraca dodatkowe informacje o użytkowniku
+    //             setUser(username); // Przechowuje tylko nazwę użytkownika
+
+    //             // Przekierowanie na stronę z postami
+    //             navigate('/Posts');
+    //         })
+    //         .catch((error) => {
+    //             setError('Login failed. Please check your credentials.');
+    //         });
+    // };
 
     return (
         <Container maxWidth="sm">
             <Typography variant="h4" gutterBottom>Login</Typography>
-            {error && <Typography color="error">{error}</Typography>}
-            <form onSubmit={handleSubmit}>
+            {/* {error && <Typography color="error">{error}</Typography>} */}
+            {/* <form onSubmit={handleSubmit}> */}
+            <form onSubmit={handleLogin}>
                 <TextField
                     label="Username"
                     fullWidth

@@ -1,8 +1,10 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const Navbar = () => {
+    const { user } = useAuth();
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
@@ -26,7 +28,7 @@ const Navbar = () => {
                         Your profile
                     </Button>
                     <Button color="inherit" component={Link} to="/logout">
-                        Logout
+                        {user ? `Logout` : `Login`}
                     </Button>
                 </Toolbar>
             </Container>

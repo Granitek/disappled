@@ -5,7 +5,8 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 import UploadButton from './UploadButton';
-import WakeWords from './WakeWords';
+// import WakeWords from './WakeWords';
+import { useAuth } from '../hooks/useAuth';
 
 const EditPost = () => {
     const { id } = useParams();
@@ -16,19 +17,36 @@ const EditPost = () => {
     const [error, setError] = useState(null);
     const [audioFile, setAudioFile] = useState(null);
     const [transcribing, setTranscribing] = useState(false);
+    const { user, token } = useAuth();
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/posts/${id}/`)
-            .then(response => {
-                setTitle(response.data.title);
-                setContent(response.data.content);
-                setLoading(false);
-            })
-            .catch(error => {
+        // Pobierz dane posta i sprawdź, czy użytkownik jest autorem
+        const fetchPost = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/posts/${id}/`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.data.author !== user.id) {
+                    // Jeśli użytkownik nie jest autorem posta, przekieruj
+                    navigate('/posts');
+                } else {
+                    setTitle(response.data.title);
+                    setContent(response.data.content);
+                }
+            } catch (err) {
                 setError('Error fetching post data');
+            } finally {
                 setLoading(false);
-            });
-    }, [id]);
+            }
+        };
+
+        if (token) {
+            fetchPost();
+        } else {
+            navigate('/login');
+        }
+    }, [id, user, token, navigate]);
 
     const handleUpdate = (e) => {
         e.preventDefault();
@@ -53,7 +71,6 @@ const EditPost = () => {
         setAudioFile(e.target.files[0]);
     };
 
-    const token = localStorage.getItem('access_token');
 
     const handleTranscription = async () => {
         if (!audioFile) return;
@@ -86,7 +103,7 @@ const EditPost = () => {
     if (error) return <p>{error}</p>;
 
     return (<>
-        <WakeWords />
+        {/* <WakeWords /> */}
         <form onSubmit={handleUpdate}>
             <div>
                 <TextField
