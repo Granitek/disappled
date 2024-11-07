@@ -15,10 +15,13 @@ import Register from './components/Register';
 import Profile from './components/Profile';
 import SpeechRecognitionComponent from './components/TestSpeechRecognition';
 import WakeWords from './components/WakeWords';
+import axios from 'axios';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(true);//żeby dobrze się odświeżało
 
   const handlePostAdded = (newPost) => {
     setPosts([...posts, newPost]);
@@ -28,12 +31,46 @@ const App = () => {
     setPosts((prevPosts) => prevPosts.filter(post => post.id !== deletedPostId));
   };
 
-  useEffect(() => {
-    const savedToken = localStorage.getItem('access_token');
-    if (savedToken) {
-      setUser({ token: savedToken });
+  async function validateToken(token) {
+    try {
+      const response = await axios.get('http://localhost:8000/users/profile/', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      // console.log(response.data.user)
+      // console.log(localStorage.getItem('access_token'))
+      return response.data.user ? response.data.user : null;
+    } catch {
+      return null;
     }
+  }
+
+  useEffect(() => {
+    // if (savedToken) {
+    //   setUser({ token: savedToken });
+    // }
+    const savedToken = localStorage.getItem('access_token');
+
+    const verifyUser = async () => {
+      if (savedToken) {
+        const userData = await validateToken(savedToken);
+
+        if (userData) {
+          setUser({ ...userData, token: savedToken });
+        } else {
+          localStorage.removeItem('access_token');
+          setUser(null);
+        }
+      }
+      setIsLoading(false);
+    };
+
+    verifyUser();
   }, []);
+
+  // useEffect(() => {
+  //   // console.log(localStorage.getItem('access_token'))
+  //   console.log("User state has been updated:", user);
+  // }, [user]);
 
 
   const [startRecognition, setStartRecognition] = useState(false);
@@ -45,6 +82,10 @@ const App = () => {
     // Opcjonalnie, możesz ustawić automatyczne wyłączenie po pewnym czasie:
     // setTimeout(() => setStartRecognition(false), 5000); // Przykładowo 5 sekund
   };
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <Router>

@@ -60,8 +60,8 @@ function WakeWords({ onWakeWordDetected }) {
             console.log(`Keyword detected: ${keywordDetection}`);
             console.log(keywordDetection.label)
             if (keywordDetection.label === "add post") {
-                // navigate('/AddPosts');
-                onWakeWordDetected()
+                navigate('/AddPosts');
+                // onWakeWordDetected()
                 stop()
             }
             if (keywordDetection.label === "edit post") {
