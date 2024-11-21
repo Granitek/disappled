@@ -2,13 +2,13 @@ import React from 'react';
 import useFetch from '../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardMedia, CardContent, Typography } from '@mui/material';
-import axios from 'axios'
+import axios from './axiosConfig'
 import { useAuth } from '../hooks/useAuth';
 
 const Posts = ({ onPostDeleted }) => {
     const { data: posts, loading, error, refetch } = useFetch('http://localhost:8000/api/posts/');
     const navigate = useNavigate();
-    const { user, token } = useAuth();
+    const { user } = useAuth();
 
     if (loading) return <p>Loading posts...</p>;
     if (error) return <p>There was an error loading the posts.</p>;
@@ -18,11 +18,7 @@ const Posts = ({ onPostDeleted }) => {
     };
 
     const handleDeleteClick = (id) => {
-        axios.delete(`http://localhost:8000/api/posts/${id}/`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
+        axios.delete(`/api/posts/${id}/`)
             .then(() => {
                 // onPostDeleted(id);
                 refetch();

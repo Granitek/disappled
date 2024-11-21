@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from './axiosConfig';
 import { Container, Typography, List, ListItem, ListItemText } from '@mui/material';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const Profile = () => {
-    const { user, token } = useAuth(); // Pobierz użytkownika i token z kontekstu autoryzacji
+    const { user } = useAuth(); // Pobierz użytkownika i token z kontekstu autoryzacji
     const [userData, setUserData] = useState(null);
     const [userPosts, setUserPosts] = useState([]);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        if (!token) {
+        if (!user) {
             setError('User is not authenticated.');
             return;
         }
 
-        axios.get('http://localhost:8000/users/profile/', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+        axios.get('/users/profile/', {
         })
             .then(response => {
                 setUserData(response.data.user);
@@ -29,7 +26,7 @@ const Profile = () => {
                 console.error('Error fetching profile data:', error);
                 setError('Failed to load profile data.');
             });
-    }, [token]);
+    }, []);
 
     if (error) {
         return <p>{error}</p>;

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from './axiosConfig';
 import { useNavigate, useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 import UploadButton from './UploadButton';
-// import WakeWords from './WakeWords';
+import WakeWords from './WakeWords';
 import { useAuth } from '../hooks/useAuth';
+import useSpeechRecognition from "../hooks/useSpeechRecognition"
 
 const EditPost = () => {
     const { id } = useParams();
@@ -17,15 +18,16 @@ const EditPost = () => {
     const [error, setError] = useState(null);
     const [audioFile, setAudioFile] = useState(null);
     const [transcribing, setTranscribing] = useState(false);
-    const { user, token } = useAuth();
+    const { user } = useAuth();
+
+    const { startRecognition } = useSpeechRecognition();
 
     useEffect(() => {
         // Pobierz dane posta i sprawdź, czy użytkownik jest autorem
         const fetchPost = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/api/posts/${id}/`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const response = await axios.get(`/api/posts/${id}/`
+                );
 
                 if (response.data.author !== user.id) {
                     // Jeśli użytkownik nie jest autorem posta, przekieruj
@@ -41,23 +43,19 @@ const EditPost = () => {
             }
         };
 
-        if (token) {
+        if (user) {
             fetchPost();
         } else {
             navigate('/login');
         }
-    }, [id, user, token, navigate]);
+    }, [id, user, navigate]);
 
     const handleUpdate = (e) => {
         e.preventDefault();
 
         const updatedPost = { title, content };
 
-        axios.put(`http://localhost:8000/api/posts/${id}/`, updatedPost, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-        })
+        axios.put(`http://localhost:8000/api/posts/${id}/`, updatedPost)
             .then(() => {
                 navigate('/Posts');
             })
@@ -65,6 +63,14 @@ const EditPost = () => {
                 setError('Error updating post');
                 console.error(error);
             });
+    };
+
+    const handleWakeWordDetected = (label) => {
+        if (label === "title") {
+            startRecognition((spokenText) => setTitle(spokenText));
+        } else if (label === "content") {
+            startRecognition((spokenText) => setContent(spokenText));
+        }
     };
 
     const handleFileChange = (e) => {
@@ -85,7 +91,6 @@ const EditPost = () => {
             const response = await axios.post('http://localhost:8000/Leopard/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${token}`
                 },
             });
 
@@ -99,11 +104,35 @@ const EditPost = () => {
         }
     };
 
+    // const startSpeechRecognition = (field) => {
+    //     if (!('webkitSpeechRecognition' in window)) return;
+
+    //     const recognition = new window.webkitSpeechRecognition();
+    //     recognition.lang = 'en-US';
+    //     recognition.continuous = false;
+    //     recognition.interimResults = false;
+
+    //     recognition.onresult = (event) => {
+    //         const spokenText = event.results[0][0].transcript;
+    //         if (field === 'title') {
+    //             setTitle(spokenText);
+    //         } else if (field === 'content') {
+    //             setContent(spokenText);
+    //         }
+    //     };
+
+    //     recognition.onerror = (event) => {
+    //         console.error("Recognition error:", event.error);
+    //     };
+
+    //     recognition.start();
+    // };
+
     if (loading) return <CircularProgress />;
     if (error) return <p>{error}</p>;
 
     return (<>
-        {/* <WakeWords /> */}
+        <WakeWords onWakeWordDetected={handleWakeWordDetected} />
         <form onSubmit={handleUpdate}>
             <div>
                 <TextField
