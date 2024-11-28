@@ -29,6 +29,7 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Pobieranie klucza ACCESS_KEY
 ACCESS_KEY = env('ACCESS_KEY')
+HUGGINGFACE_API_TOKEN = env('HUGGINGFACE_API_TOKEN')
 
 DEBUG = True
 
@@ -193,3 +194,7 @@ SIMPLE_JWT = {
     'SIGNING_KEY': SECRET_KEY,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+# Generating images
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -3,6 +3,13 @@ from .models import Post
 from .serializers import PostSerializer
 from .permissions import IsAuthorOrReadOnly
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from .services import generate_image_from_title
+import os
+# services.py
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# from .services import generate_image_from_title
+# import os
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -10,8 +17,30 @@ class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     #przypisuje zalogowanego użytkownika jako autora
+    # def perform_create(self, serializer):
+    #     serializer.save(author=self.request.user)
+    
+    # Przypisuje zalogowanego użytkownika jako autora i generuje obraz
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        title = self.request.data.get("title")
+
+        # Generowanie obrazu
+        if title:
+            try:
+                image_data = generate_image_from_title(title)
+                image_path = f"media/generated_images/{title.replace(' ', '_')}.png"
+
+                # Zapis obrazu w folderze "media"
+                os.makedirs(os.path.dirname(image_path), exist_ok=True)
+                with open(image_path, "wb") as f:
+                    f.write(image_data)
+
+                # Zapisywanie posta z wygenerowanym obrazem
+                serializer.save(author=self.request.user, image=image_path)
+            except Exception as e:
+                raise ValueError(f"Image generation failed: {str(e)}")
+        else:
+            serializer.save(author=self.request.user)  # Bez obrazu, jeśli brak tytułu
 
     def get_queryset(self):
         return Post.objects.all()

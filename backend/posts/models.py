@@ -11,6 +11,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, default=get_default_user)
+    image = models.ImageField(upload_to="generated_images/", null=True, blank=True)
 
     def __str__(self):
         return self.title
