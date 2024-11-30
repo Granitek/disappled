@@ -38,9 +38,10 @@ const Posts = ({ onPostDeleted }) => {
                     <Card sx={{ maxWidth: 345 }} >
                         <CardMedia
                             component="img"
-                            alt="post image"
+                            alt={post.title}
                             height="140"
-                            image="photo.jpg"
+                            image={post.image_url || 'default_image.jpg'}
+                            sx={{ objectFit: 'cover' }}
                         />
                         <CardContent>
                             <Typography gutterBottom variant="h5" component="div">

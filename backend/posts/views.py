@@ -10,6 +10,7 @@ import os
 # from django.views.decorators.csrf import csrf_exempt
 # from .services import generate_image_from_title
 # import os
+from django.conf import settings
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -28,15 +29,16 @@ class PostViewSet(viewsets.ModelViewSet):
         if title:
             try:
                 image_data = generate_image_from_title(title)
-                image_path = f"media/generated_images/{title.replace(' ', '_')}.png"
-
+                # image_path = f"generated_images/{title.replace(' ', '_')}.png"
+                relative_image_path = f"generated_images/{title.replace(' ', '_')}.png"
+                image_path = os.path.join(settings.MEDIA_ROOT, relative_image_path)
                 # Zapis obrazu w folderze "media"
                 os.makedirs(os.path.dirname(image_path), exist_ok=True)
                 with open(image_path, "wb") as f:
                     f.write(image_data)
 
                 # Zapisywanie posta z wygenerowanym obrazem
-                serializer.save(author=self.request.user, image=image_path)
+                serializer.save(author=self.request.user, image=relative_image_path)
             except Exception as e:
                 raise ValueError(f"Image generation failed: {str(e)}")
         else:
