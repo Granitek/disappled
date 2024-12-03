@@ -47,6 +47,24 @@ class PostViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Post.objects.all()
     
+    # Dodanie obsługi obrazu podczas aktualizacji posta
+    def perform_update(self, serializer):
+        title = self.request.data.get("title")
+        if title:
+            try:
+                image_data = generate_image_from_title(title)
+                relative_image_path = f"generated_images/{title.replace(' ', '_')}.png"
+                image_path = os.path.join(settings.MEDIA_ROOT, relative_image_path)
+                os.makedirs(os.path.dirname(image_path), exist_ok=True)
+                with open(image_path, "wb") as f:
+                    f.write(image_data)
+
+                serializer.save(image=relative_image_path)
+            except Exception as e:
+                raise ValueError(f"Image generation failed: {str(e)}")
+        else:
+            serializer.save()
+
     # Funkcja get_permissions dla bardziej złożonych uprawnień
     def get_permissions(self):
         if self.action in ['update', 'partial_update', 'destroy']:
