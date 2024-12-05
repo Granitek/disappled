@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from './axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField } from '@mui/material';
 import UploadButton from './UploadButton';
@@ -12,7 +12,7 @@ const AddPost = ({ onPostAdded }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [audioFile, setAudioFile] = useState(null);
-    const [recognitionActive, setRecognitionActive] = useState(false);
+    // const [recognitionActive, setRecognitionActive] = useState(false);
     const navigate = useNavigate();
     const [transcribing, setTranscribing] = useState(false);
 
@@ -61,7 +61,7 @@ const AddPost = ({ onPostAdded }) => {
         formData.append('audioFile', audioFile);
 
         try {
-            const response = await axios.post('http://localhost:8000/Leopard/', formData, {
+            const response = await axios.post('/Leopard/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -77,8 +77,6 @@ const AddPost = ({ onPostAdded }) => {
         }
     };
 
-    const token = localStorage.getItem('access_token');
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -90,10 +88,7 @@ const AddPost = ({ onPostAdded }) => {
             content: content,
         };
 
-        axios.post('http://localhost:8000/api/posts/', newPost, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+        axios.post('/api/posts/', newPost, {
         })
             .then(response => {
                 onPostAdded(response.data);

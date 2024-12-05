@@ -20,7 +20,6 @@ const Posts = ({ onPostDeleted }) => {
     const handleDeleteClick = (id) => {
         axios.delete(`/api/posts/${id}/`)
             .then(() => {
-                // onPostDeleted(id);
                 refetch();
             })
             .catch(error => {
@@ -53,7 +52,7 @@ const Posts = ({ onPostDeleted }) => {
                             <Typography variant="body2" color="text.secondary">
                                 {post.author}
                             </Typography>
-                            {user && post.author == user.id && (<>
+                            {user && post.author === user.id && (<>
                                 <Button
                                     variant="outlined"
                                     onClick={() => handleEditClick(post.id)}

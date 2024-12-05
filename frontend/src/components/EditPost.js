@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from './axiosConfig';
 import { useNavigate, useParams } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Button, TextField, CircularProgress, } from '@mui/material';
 import UploadButton from './UploadButton';
 import WakeWords from './WakeWords';
 import { useAuth } from '../hooks/useAuth';
@@ -88,7 +86,7 @@ const EditPost = () => {
         formData.append('audioFile', audioFile);
 
         try {
-            const response = await axios.post('http://localhost:8000/Leopard/', formData, {
+            const response = await axios.post('/Leopard/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -103,30 +101,6 @@ const EditPost = () => {
             setTranscribing(false);
         }
     };
-
-    // const startSpeechRecognition = (field) => {
-    //     if (!('webkitSpeechRecognition' in window)) return;
-
-    //     const recognition = new window.webkitSpeechRecognition();
-    //     recognition.lang = 'en-US';
-    //     recognition.continuous = false;
-    //     recognition.interimResults = false;
-
-    //     recognition.onresult = (event) => {
-    //         const spokenText = event.results[0][0].transcript;
-    //         if (field === 'title') {
-    //             setTitle(spokenText);
-    //         } else if (field === 'content') {
-    //             setContent(spokenText);
-    //         }
-    //     };
-
-    //     recognition.onerror = (event) => {
-    //         console.error("Recognition error:", event.error);
-    //     };
-
-    //     recognition.start();
-    // };
 
     if (loading) return <CircularProgress />;
     if (error) return <p>{error}</p>;

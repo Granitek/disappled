@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { usePorcupine } from "@picovoice/porcupine-react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import axios from 'axios'
-// import SpeechRecognition from "./SpeechRecognition";
+import axios from "./axiosConfig";
 
 function WakeWords({ onWakeWordDetected }) {
     const navigate = useNavigate();
     const { id } = useParams();
     const location = useLocation();
-    const token = localStorage.getItem('access_token');
-
-    // const [startSpeechRecognition, setStartSpeechRecognition] = useState(false);
 
     const {
         keywordDetection,
@@ -58,9 +54,13 @@ function WakeWords({ onWakeWordDetected }) {
     }, []);
 
     useEffect(() => {
-        if (isLoaded) {
-            start();
-        }
+        axios.get('/users/profile/')
+            .then(response => {
+                if (response.data.listen_to_wakewords) {
+                    start();
+                }
+            })
+            .catch(error => console.error(error));
     }, [isLoaded]);
 
     useEffect(() => {
@@ -103,14 +103,9 @@ function WakeWords({ onWakeWordDetected }) {
 
     const handleDeletePost = () => {
         console.log(id)
-        axios.delete(`http://localhost:8000/api/posts/${id}/`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+        axios.delete(`/api/posts/${id}/`, {
         })
             .then(() => {
-                // onPostDeleted(id);
-                // refetch();
                 navigate('/')
             })
             .catch(error => {
@@ -121,82 +116,8 @@ function WakeWords({ onWakeWordDetected }) {
     return (
         <div>
             <h2>{isListening ? "Listening..." : "Not listening"}</h2>
-            {/* <SpeechRecognition startRecognition={startSpeechRecognition} /> */}
         </div>
     );
 }
 
 export default WakeWords;
-
-
-// import React, { useEffect } from "react";
-// import { usePorcupine } from "@picovoice/porcupine-react";
-// import { useNavigate, useParams, useLocation } from "react-router-dom";
-// import axios from 'axios';
-
-// function WakeWords({ onWakeWordDetected }) {
-//     const navigate = useNavigate();
-//     const { id } = useParams();
-//     const location = useLocation();
-//     const token = localStorage.getItem('access_token');
-
-//     const {
-//         keywordDetection,
-//         isLoaded,
-//         isListening,
-//         error,
-//         init,
-//         start,
-//         stop,
-//         release,
-//     } = usePorcupine();
-
-//     const porcupineKeyword = [
-//         { publicPath: '/wakewords/blueberry_wasm.ppn', label: "speech recognition" },
-//         { publicPath: '/wakewords/add-post_en_wasm_v3_0_0.ppn', label: "add post" },
-
-//     ];
-
-//     const porcupineModel = { publicPath: '/model/porcupine_params.pv', };
-
-//     useEffect(() => {
-//         init(process.env.REACT_APP_ACCESS_KEY, porcupineKeyword, porcupineModel);
-//     }, []);
-
-//     useEffect(() => {
-//         if (isLoaded) {
-//             start();
-//         }
-//     }, [isLoaded]);
-
-//     useEffect(() => {
-//         if (keywordDetection !== null) {
-//             console.log(`Keyword detected: ${keywordDetection.label}`);
-//             if (keywordDetection.label === "speech recognition") {
-//                 onWakeWordDetected("title"); // Przekazuje 'title' do startSpeechRecognition
-//                 stop();
-//             } else if (keywordDetection.label === "add post") {
-//                 onWakeWordDetected("content"); // Przekazuje 'content' do startSpeechRecognition
-//                 stop();
-//             }
-//         }
-//     }, [keywordDetection, onWakeWordDetected]);
-
-//     useEffect(() => {
-//         return () => {
-//             release();
-//         };
-//     }, []);
-
-//     if (error) {
-//         return <div>Error: {error.message}</div>;
-//     }
-
-//     return (
-//         <div>
-//             <h2>{isListening ? "Listening..." : "Not listening"}</h2>
-//         </div>
-//     );
-// }
-
-// export default WakeWords;

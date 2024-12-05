@@ -15,6 +15,8 @@ from posts.serializers import PostSerializer
 from .serializers import UserSerializer
 
 from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework.permissions import AllowAny
+
 
 class LoginView(APIView):
     # permission_classes = [AllowAny]
@@ -97,6 +99,7 @@ class CustomTokenRefreshView(TokenRefreshView):
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -115,9 +118,9 @@ class UserProfileView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        print("Cookies received:", request.COOKIES)  # Sprawdź, czy ciasteczko access_token jest obecne
-        print("Authorization Header:", request.headers.get('Authorization'))  # Czy nagłówek JWT jest obecny?
-        print("Authenticated user:", request.user)  # Czy użytkownik jest rozpoznawany?
+        # print("Cookies received:", request.COOKIES)  # Sprawdź, czy ciasteczko access_token jest obecne
+        # print("Authorization Header:", request.headers.get('Authorization'))  # Czy nagłówek JWT jest obecny?
+        # print("Authenticated user:", request.user)  # Czy użytkownik jest rozpoznawany?
 
         if not request.user.is_authenticated:
             return Response({"detail": "Authentication failed"}, status=401)
@@ -126,11 +129,19 @@ class UserProfileView(generics.RetrieveAPIView):
         user_data = UserSerializer(user).data
         user_posts = Post.objects.filter(author=user)
         user_posts_data = PostSerializer(user_posts, many=True).data
+        listen_to_wakewords = user.profile.listen_to_wakewords
 
         return Response({
             "user": user_data,
-            "posts": user_posts_data
+            "posts": user_posts_data,
+            "listen_to_wakewords": listen_to_wakewords
         })
+    
+    def put(self, request, *args, **kwargs):
+        profile = request.user.profile
+        profile.listen_to_wakewords = request.data.get('listen_to_wakewords', profile.listen_to_wakewords)
+        profile.save()
+        return Response({"message": "Profile updated successfully"})
     
 
 

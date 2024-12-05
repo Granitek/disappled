@@ -1,8 +1,6 @@
-// src/Register.js
-
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Container, Typography } from '@mui/material';
+import { TextField, Button, Container, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
@@ -11,6 +9,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
+    const [listenWakewords, setListenWakewords] = useState(false);
 
     const navigate = useNavigate();
 
@@ -19,7 +18,8 @@ const Register = () => {
         axios.post('http://localhost:8000/users/register/', {
             username: username,
             email: email,
-            password: password
+            password: password,
+            listen_to_wakewords: listenWakewords
         })
             .then(response => {
                 setSuccess(true);
@@ -58,6 +58,15 @@ const Register = () => {
                     margin="normal"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={listenWakewords}
+                            onChange={(e) => setListenWakewords(e.target.checked)}
+                        />
+                    }
+                    label="Enable wake word detection by default"
                 />
                 <Button variant="contained" color="primary" type="submit" fullWidth>Register</Button>
             </form>

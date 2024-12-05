@@ -15,79 +15,30 @@ import Register from './components/Register';
 import Profile from './components/Profile';
 import SpeechRecognitionComponent from './components/SpeechRecognition';
 import WakeWords from './components/WakeWords';
-import axios from 'axios';
+// import axios from 'axios';
 import { AuthProvider } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  // const [user, setUser] = useState(null);
-
-  // const [isLoading, setIsLoading] = useState(true);//żeby dobrze się odświeżało
 
   const handlePostAdded = (newPost) => {
     setPosts([...posts, newPost]);
   };
 
-  const handlePostDeleted = (deletedPostId) => {
-    setPosts((prevPosts) => prevPosts.filter(post => post.id !== deletedPostId));
-  };
+  // const handlePostDeleted = (deletedPostId) => {
+  //   setPosts((prevPosts) => prevPosts.filter(post => post.id !== deletedPostId));
+  // };
 
-  // async function validateToken(token) {
-  //   try {
-  //     const response = await axios.get('http://localhost:8000/users/profile/', {
-  //       headers: { 'Authorization': `Bearer ${token}` }
-  //     });
-  //     // console.log(response.data.user)
-  //     // console.log(localStorage.getItem('access_token'))
-  //     return response.data.user ? response.data.user : null;
-  //   } catch {
-  //     return null;
-  //   }
-  // }
+  // const [startRecognition, setStartRecognition] = useState(false);
 
-  // useEffect(() => {
-  //   // if (savedToken) {
-  //   //   setUser({ token: savedToken });
-  //   // }
-  //   const savedToken = localStorage.getItem('access_token');
+  // const handleWakeWordDetection = () => {
+  //   // Funkcja uruchamiana po wykryciu słowa kluczowego, włączająca rozpoznawanie mowy
+  //   setStartRecognition(true);
 
-  //   const verifyUser = async () => {
-  //     if (savedToken) {
-  //       const userData = await validateToken(savedToken);
-
-  //       if (userData) {
-  //         setUser({ ...userData, token: savedToken });
-  //       } else {
-  //         localStorage.removeItem('access_token');
-  //         setUser(null);
-  //       }
-  //     }
-  //     setIsLoading(false);
-  //   };
-
-  //   verifyUser();
-  // }, []);
-
-  // // useEffect(() => {
-  // //   // console.log(localStorage.getItem('access_token'))
-  // //   console.log("User state has been updated:", user);
-  // // }, [user]);
-
-
-  const [startRecognition, setStartRecognition] = useState(false);
-
-  const handleWakeWordDetection = () => {
-    // Funkcja uruchamiana po wykryciu słowa kluczowego, włączająca rozpoznawanie mowy
-    setStartRecognition(true);
-
-    // Opcjonalnie, możesz ustawić automatyczne wyłączenie po pewnym czasie:
-    // setTimeout(() => setStartRecognition(false), 5000); // Przykładowo 5 sekund
-  };
-
-  // if (isLoading) {
-  //   return <p>Loading...</p>;
-  // }
+  //   // Opcjonalnie, możesz ustawić automatyczne wyłączenie po pewnym czasie:
+  //   // setTimeout(() => setStartRecognition(false), 5000); // Przykładowo 5 sekund
+  // };
 
   return (
     <AuthProvider>
@@ -95,26 +46,19 @@ const App = () => {
         <Layout>
           <Routes>
             <Route exact path="/" element={<Home />} />
-            <Route path="/Cheetah" element={<Cheetah />} />
-            <Route path="/Leopard" element={<Leopard />} />
-            <Route path="/CheetahFrontend" element={<CheetahFrontend />} />
-            {/* <Route path="/Login" element={<Login setUser={setUser} />} />
-            <Route path="/logout" element={<Logout setUser={setUser} />} /> */}
             <Route path="/Login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/cheetahtest" element={<Cheetahtest />} />
-            <Route path='/testt' element={<>
-              <WakeWords onWakeWordDetected={handleWakeWordDetection} />
-              <SpeechRecognitionComponent startRecognition={startRecognition} /></>} />
-            {/* <Route path="/AddPosts" element={<AddPost onPostAdded={handlePostAdded} />} />
-          <Route path="/Posts" element={<Posts />} />
-          <Route path="/EditPost/:id" element={<EditPost />} /> */}
+            <Route path="/Leopard" element={<Leopard />} />
+            {/* <Route path="/Cheetah" element={<Cheetah />} /> */}
+            {/* <Route path="/CheetahFrontend" element={<CheetahFrontend />} /> */}
+            {/* <Route path="/Login" element={<Login setUser={setUser} />} />
+            <Route path="/logout" element={<Logout setUser={setUser} />} /> */}
 
-            {/* <Route path="/AddPosts" element={user ? <AddPost onPostAdded={handlePostAdded} /> : <Navigate to="/Login" />} />
-          <Route path="/EditPost/:id" element={user ? <EditPost /> : <Navigate to="/Login" />} />
-          <Route path="/Posts" element={<Posts posts={posts} user={user} onPostDeleted={handlePostDeleted} />} />
-          <Route path="/profile" element={user ? <Profile /> : <Navigate to="/Login" />} /> */}
+            {/* <Route path="/cheetahtest" element={<Cheetahtest />} /> */}
+            {/* <Route path='/testt' element={<>
+              <WakeWords onWakeWordDetected={handleWakeWordDetection} />
+              <SpeechRecognitionComponent startRecognition={startRecognition} /></>} /> */}
             <Route
               path="/profile"
               element={
@@ -143,7 +87,7 @@ const App = () => {
               path="/Posts"
               element={
                 <ProtectedRoute>
-                  <Posts onPostDeleted={handlePostDeleted} />
+                  <Posts />
                 </ProtectedRoute>
               } />
           </Routes>

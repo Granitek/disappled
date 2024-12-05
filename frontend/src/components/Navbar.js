@@ -18,21 +18,22 @@ const Navbar = () => {
                     <Button color="inherit" component={Link} to="/Leopard">
                         Leopard
                     </Button>
-                    <Button color="inherit" component={Link} to="/Cheetah">
+                    {/* <Button color="inherit" component={Link} to="/Cheetah">
                         Cheetah
-                    </Button>
+                    </Button> */}
                     <Button color="inherit" component={Link} to="/Text">
                         Text
                     </Button>
                     <Button color="inherit" component={Link} to="/profile">
                         Your profile
                     </Button>
-                    <Button color="inherit" component={Link} to="/logout">
-                        {user ? `Logout` : `Login`}
-                    </Button>
+                    {user ?
+                        (<Button color="inherit" component={Link} to="/logout">Logout</Button>) :
+                        (<Button color="inherit" component={Link} to="/login" >Login</Button>)
+                    }
                 </Toolbar>
             </Container>
-        </AppBar>
+        </AppBar >
     );
 };
 
