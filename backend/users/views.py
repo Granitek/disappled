@@ -12,7 +12,7 @@ from .serializers import RegisterSerializer
 from django.contrib.auth.models import User
 from posts.models import Post
 from posts.serializers import PostSerializer
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserProfileSerializer
 
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.permissions import AllowAny
@@ -116,12 +116,9 @@ class RegisterView(generics.CreateAPIView):
 
 class UserProfileView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserProfileSerializer
 
     def get(self, request, *args, **kwargs):
-        # print("Cookies received:", request.COOKIES)  # Sprawdź, czy ciasteczko access_token jest obecne
-        # print("Authorization Header:", request.headers.get('Authorization'))  # Czy nagłówek JWT jest obecny?
-        # print("Authenticated user:", request.user)  # Czy użytkownik jest rozpoznawany?
-
         if not request.user.is_authenticated:
             return Response({"detail": "Authentication failed"}, status=401)
 
@@ -129,19 +126,27 @@ class UserProfileView(generics.RetrieveAPIView):
         user_data = UserSerializer(user).data
         user_posts = Post.objects.filter(author=user)
         user_posts_data = PostSerializer(user_posts, many=True).data
-        listen_to_wakewords = user.profile.listen_to_wakewords
+        # listen_to_wakewords = user.profile.listen_to_wakewords
+        # font_size = user.profile.font_size
 
         return Response({
             "user": user_data,
             "posts": user_posts_data,
-            "listen_to_wakewords": listen_to_wakewords
+            # "listen_to_wakewords": listen_to_wakewords,
+            # "font_size": font_size
         })
     
     def put(self, request, *args, **kwargs):
         profile = request.user.profile
-        profile.listen_to_wakewords = request.data.get('listen_to_wakewords', profile.listen_to_wakewords)
-        profile.save()
-        return Response({"message": "Profile updated successfully"})
+        serializer = UserProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Profile updated successfully"})
+        return Response(serializer.errors, status=400)
+        # profile.listen_to_wakewords = request.data.get('listen_to_wakewords', profile.listen_to_wakewords)
+        # profile.font_size = request.data.get('font_size', profile.font_size)
+        # profile.save()
+        # return Response({"message": "Profile updated successfully"})
     
 
 
