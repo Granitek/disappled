@@ -1,16 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from './axiosConfig';
-import { Container, Typography, List, ListItem, ListItemText, Switch, FormControlLabel, MenuItem, Select, Button } from '@mui/material';
+import { Container, Typography, List, ListItem, ListItemText, Switch, FormControlLabel, MenuItem, Select, Button, CircularProgress } from '@mui/material';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
 const Profile = () => {
-    const { user, posts } = useAuth(); // Pobierz użytkownika i jego posty z kontekstu autoryzacji
-    const [listenWakewords, setListenWakewords] = useState(user?.profile.listen_to_wakewords || false);
-    const [fontSize, setFontSize] = useState(user?.profile.font_size || 'Medium');
+    const { user, posts } = useAuth();
+    const [listenWakewords, setListenWakewords] = useState(false);
+    const [fontSize, setFontSize] = useState('Medium');
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await axios.get('/users/profile/');
+                setListenWakewords(response.data.user.profile.listen_to_wakewords);
+                setFontSize(response.data.user.profile.font_size);
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
 
     if (!user) {
         return <Navigate to="/Login" replace />;
+    }
+
+    if (loading) {
+        return <CircularProgress />
     }
 
     const handleSaveWakewords = () => {

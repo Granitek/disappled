@@ -18,6 +18,7 @@ import WakeWords from './components/WakeWords';
 // import axios from 'axios';
 import { AuthProvider } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute';
+import PostDetail from './components/PostDetail';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
@@ -50,6 +51,7 @@ const App = () => {
             <Route path="/logout" element={<Logout />} />
             <Route path="/register" element={<Register />} />
             <Route path="/Leopard" element={<Leopard />} />
+            <Route path="/PostDetail/:id" element={<PostDetail />} />
             {/* <Route path="/Cheetah" element={<Cheetah />} /> */}
             {/* <Route path="/CheetahFrontend" element={<CheetahFrontend />} /> */}
             {/* <Route path="/Login" element={<Login setUser={setUser} />} />

@@ -43,7 +43,8 @@ const Posts = ({ onPostDeleted }) => {
                             sx={{ objectFit: 'cover' }}
                         />
                         <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
+                            <Typography gutterBottom variant="h5" component="div" style={{ cursor: 'pointer', color: 'blue' }}
+                                onClick={() => navigate(`/PostDetail/${post.id}`)}>
                                 {post.title}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">

@@ -56,7 +56,8 @@ function WakeWords({ onWakeWordDetected }) {
     useEffect(() => {
         axios.get('/users/profile/')
             .then(response => {
-                if (response.data.listen_to_wakewords) {
+                // console.log(response.data.user.profile.listen_to_wakewords)
+                if (response.data.user.profile.listen_to_wakewords) {
                     start();
                 }
             })
