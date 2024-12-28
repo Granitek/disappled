@@ -17,6 +17,7 @@ const EditPost = () => {
     const [audioFile, setAudioFile] = useState(null);
     const [transcribing, setTranscribing] = useState(false);
     const { user } = useAuth();
+    const [imageFile, setImageFile] = useState(null);
 
     const { startRecognition } = useSpeechRecognition();
 
@@ -48,12 +49,29 @@ const EditPost = () => {
         }
     }, [id, user, navigate]);
 
+    const handleImageFileChange = (e) => {
+        if (e.target.files.length > 0) {
+            setImageFile(e.target.files[0]);
+            console.log("Obraz " + imageFile)
+        } else {
+            setImageFile(null);
+        }
+    };
+
     const handleUpdate = (e) => {
         e.preventDefault();
 
-        const updatedPost = { title, content };
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('content', content);
 
-        axios.put(`/api/posts/${id}/`, updatedPost)
+        if (imageFile) {
+            formData.append('image', imageFile);  // Dodaj obraz, jeśli istnieje
+        }
+
+        // const updatedPost = { title, content };
+
+        axios.put(`/api/posts/${id}/`, formData)
             .then(() => {
                 navigate('/Posts');
             })
@@ -122,6 +140,13 @@ const EditPost = () => {
             <Button variant="contained" onClick={handleTranscription} disabled={transcribing || !audioFile}>
                 {transcribing ? 'Transcribing...' : 'Transcribe Audio'}
             </Button>
+            <div>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageFileChange}
+                />
+            </div>
             <div>
                 <TextField
                     label="Content"

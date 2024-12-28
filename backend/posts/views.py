@@ -24,9 +24,11 @@ class PostViewSet(viewsets.ModelViewSet):
     # Przypisuje zalogowanego użytkownika jako autora i generuje obraz
     def perform_create(self, serializer):
         title = self.request.data.get("title")
+        image = self.request.data.get("image")
 
         # Generowanie obrazu
-        if title:
+        # if title:
+        if not image and title:
             try:
                 image_data = generate_image_from_title(title)
                 # image_path = f"generated_images/{title.replace(' ', '_')}.png"
@@ -50,7 +52,10 @@ class PostViewSet(viewsets.ModelViewSet):
     # Dodanie obsługi obrazu podczas aktualizacji posta
     def perform_update(self, serializer):
         title = self.request.data.get("title")
-        if title:
+        image = self.request.data.get("image")
+        
+        # if title:
+        if not image and title:
             try:
                 image_data = generate_image_from_title(title)
                 relative_image_path = f"generated_images/{title.replace(' ', '_')}.png"
@@ -71,3 +76,9 @@ class PostViewSet(viewsets.ModelViewSet):
             # Używaj IsAuthorOrReadOnly tylko dla operacji edycji i usuwania
             return [IsAuthorOrReadOnly()]
         return super().get_permissions()
+    
+    def get_serializer_context(self):
+        # Dodaj kontekst dla 'image_url'
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
