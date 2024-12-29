@@ -3,12 +3,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Posts from '../components/Posts';
 import WakeWords from '../components/WakeWords';
+import { useFontSize } from '../components/FontSizeContext';
 
 const Home = () => {
+    const { applyFontSize } = useFontSize();
     return (
         <>
             <WakeWords />
-            <Typography variant="h4" style={{ textAlign: 'center' }}>
+            <Typography style={{ textAlign: 'center', fontSize: applyFontSize() }}>
                 Welcome to a page dedicated to people who have difficulties using or administering typical websites.
             </Typography>
             <Typography variant='h5'>

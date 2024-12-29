@@ -3,16 +3,18 @@ import axios from './axiosConfig';
 import { Container, Typography, List, ListItem, ListItemText, Switch, FormControlLabel, MenuItem, Select, Button, CircularProgress } from '@mui/material';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useFontSize } from './FontSizeContext';
 
 const Profile = () => {
     const { user, posts } = useAuth();
     const [listenWakewords, setListenWakewords] = useState(false);
-    const [fontSize, setFontSize] = useState('Medium');
+    // const [fontSize, setFontSize] = useState('Medium');
     const [loading, setLoading] = useState(true);
     const [sortedPosts, setSortedPosts] = useState(posts);
     const [sortField, setSortField] = useState('title');
     const [sortDirection, setSortDirection] = useState('asc');
     const [ordering, setOrdering] = useState('title:asc');
+    const { fontSize, setFontSize } = useFontSize();
 
 
     useEffect(() => {
@@ -78,6 +80,10 @@ const Profile = () => {
         setSortDirection(direction);
         setOrdering(event.target.value);
     };
+
+    // const handleSaveFontSize = () => {
+    //     alert(`Font size updated to ${fontSize}`);
+    // };
 
     return (
         <Container maxWidth="md" style={{ fontSize: applyFontSize() }}>
