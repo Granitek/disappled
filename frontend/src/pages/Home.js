@@ -6,14 +6,15 @@ import WakeWords from '../components/WakeWords';
 import { useFontSize } from '../components/FontSizeContext';
 
 const Home = () => {
-    const { applyFontSize } = useFontSize();
+    const { applyFontSize, applyReducedFontSize } = useFontSize();
+
     return (
         <>
             <WakeWords />
             <Typography style={{ textAlign: 'center', fontSize: applyFontSize() }}>
                 Welcome to a page dedicated to people who have difficulties using or administering typical websites.
             </Typography>
-            <Typography variant='h5'>
+            <Typography style={{ textAlign: 'center', fontSize: applyReducedFontSize() }}>
                 If you want a previously recorded audio file transcribed into text, click on the 'Leopard' tab in the navigation menu or {' '}
                 <Link to='/Leopard'>click here</Link>.
             </Typography>

@@ -6,6 +6,7 @@ import UploadButton from './UploadButton';
 import WakeWords from './WakeWords';
 import { useAuth } from '../hooks/useAuth';
 import useSpeechRecognition from "../hooks/useSpeechRecognition"
+import { useFontSize } from './FontSizeContext';
 
 const EditPost = () => {
     const { id } = useParams();
@@ -18,6 +19,7 @@ const EditPost = () => {
     const [transcribing, setTranscribing] = useState(false);
     const { user } = useAuth();
     const [imageFile, setImageFile] = useState(null);
+    const { applyFontSize, applyReducedFontSize } = useFontSize();
 
     const { startRecognition } = useSpeechRecognition();
 
@@ -134,10 +136,15 @@ const EditPost = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     margin="normal"
+                    InputProps={{
+                        style: {
+                            fontSize: applyReducedFontSize(),
+                        },
+                    }}
                 />
             </div>
             <UploadButton handleFileChange={handleFileChange} />
-            <Button variant="contained" onClick={handleTranscription} disabled={transcribing || !audioFile}>
+            <Button variant="contained" onClick={handleTranscription} disabled={transcribing || !audioFile} style={{ fontSize: applyReducedFontSize() }}>
                 {transcribing ? 'Transcribing...' : 'Transcribe Audio'}
             </Button>
             <div>
@@ -145,6 +152,7 @@ const EditPost = () => {
                     type="file"
                     accept="image/*"
                     onChange={handleImageFileChange}
+                    style={{ fontSize: applyReducedFontSize() }}
                 />
             </div>
             <div>
@@ -157,9 +165,14 @@ const EditPost = () => {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     margin="normal"
+                    InputProps={{
+                        style: {
+                            fontSize: applyReducedFontSize(),
+                        },
+                    }}
                 />
             </div>
-            <Button type="submit" variant="contained" color="primary" disabled={loading || !content || !title}>
+            <Button type="submit" variant="contained" color="primary" disabled={loading || !content || !title} style={{ fontSize: applyReducedFontSize() }}>
                 Update Post
             </Button>
         </form>

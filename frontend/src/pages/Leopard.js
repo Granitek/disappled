@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Box, Card, Typography, Divider, CardContent, Button } from '@mui/material';
 import UploadButton from '../components/UploadButton';
+import { useFontSize } from '../components/FontSizeContext';
 
 const Leopard = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [transcript, setTranscript] = useState('');
-
+    const { applyFontSize, applyReducedFontSize } = useFontSize();
     const handleFileChange = (e) => {
         setSelectedFile(e.target.files[0]);
     };
@@ -31,7 +32,7 @@ const Leopard = () => {
     return (
         <Card variant="outlined">
             <CardContent>
-                <Typography variant="h4" style={{ textAlign: 'center' }}>
+                <Typography style={{ textAlign: 'center', fontSize: applyFontSize() }}>
                     Przekształć audio na tekst
                 </Typography>
                 <Box sx={{
@@ -40,13 +41,13 @@ const Leopard = () => {
                     alignItems: 'center',
                 }}>
                     <UploadButton handleFileChange={handleFileChange} />
-                    <Button onClick={handleUpload}>Prześlij audio</Button>
+                    <Button onClick={handleUpload} style={{ fontSize: applyReducedFontSize() }}>Prześlij audio</Button>
                 </Box>
                 <Divider />
-                <Typography variant="h4" style={{ textAlign: 'center' }}>
+                <Typography style={{ textAlign: 'center', fontSize: applyFontSize() }}>
                     Przekonwertowany tekst:
                 </Typography>
-                <Typography variant="h5" style={{ textAlign: 'center' }}>
+                <Typography style={{ textAlign: 'center', fontSize: applyReducedFontSize() }}>
                     {transcript}
                 </Typography>
             </CardContent>

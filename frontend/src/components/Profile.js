@@ -8,14 +8,12 @@ import { useFontSize } from './FontSizeContext';
 const Profile = () => {
     const { user, posts } = useAuth();
     const [listenWakewords, setListenWakewords] = useState(false);
-    // const [fontSize, setFontSize] = useState('Medium');
     const [loading, setLoading] = useState(true);
     const [sortedPosts, setSortedPosts] = useState(posts);
-    const [sortField, setSortField] = useState('title');
+    const [sortField, setSortField] = useState('created_at');
     const [sortDirection, setSortDirection] = useState('asc');
-    const [ordering, setOrdering] = useState('title:asc');
-    const { fontSize, setFontSize } = useFontSize();
-
+    const [ordering, setOrdering] = useState('created_at:asc');
+    const { fontSize, setFontSize, applyFontSize, applyReducedFontSize } = useFontSize();
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -60,19 +58,11 @@ const Profile = () => {
             .catch(error => console.error(error));
     };
 
-    const handleSaveFontSize = () => {
-        axios.put('/users/profile/', { font_size: fontSize })
-            .then(() => alert('Font Size updated successfully!'))
-            .catch(error => console.error(error));
-    };
-
-    const applyFontSize = () => {
-        switch (fontSize) {
-            case 'Small': return '14px';
-            case 'Large': return '40px';
-            default: return '20px';
-        }
-    }
+    // const handleSaveFontSize = () => {
+    //     axios.put('/users/profile/', { font_size: fontSize })
+    //         .then(() => alert('Font Size updated successfully!'))
+    //         .catch(error => console.error(error));
+    // };
 
     const handleSortChange = (event) => {
         const [field, direction] = event.target.value.split(':');
@@ -81,17 +71,13 @@ const Profile = () => {
         setOrdering(event.target.value);
     };
 
-    // const handleSaveFontSize = () => {
-    //     alert(`Font size updated to ${fontSize}`);
-    // };
-
     return (
         <Container maxWidth="md" style={{ fontSize: applyFontSize() }}>
             <Typography style={{ fontSize: applyFontSize() }} gutterBottom>Profile</Typography>
             {user && (
                 <>
-                    <Typography variant="h6">Username: {user.username}</Typography>
-                    <Typography variant="h6">Email: {user.email},{user.profile.listen_to_wakewords} ,{user.profile.font_size}</Typography>
+                    <Typography style={{ fontSize: applyReducedFontSize() }}>Username: {user.username}</Typography>
+                    <Typography style={{ fontSize: applyReducedFontSize() }}>Email: {user.email}</Typography>
                     <FormControlLabel
                         control={
                             <Switch
@@ -101,35 +87,37 @@ const Profile = () => {
                         }
                         label="Enable wake word detection"
                     />
-                    <Button variant="contained" color="primary" onClick={handleSaveWakewords} style={{ marginTop: '20px' }}>
+                    <Button variant="contained" color="primary" onClick={handleSaveWakewords} style={{ marginTop: '20px', fontSize: applyReducedFontSize() }}>
                         Save
                     </Button>
-                    <Typography variant="h6" gutterBottom>Font Size Preference:</Typography>
+                    <Typography style={{ fontSize: applyReducedFontSize() }} gutterBottom>Font Size Preference:</Typography>
                     <Select
                         value={fontSize}
                         onChange={(e) => setFontSize(e.target.value)}
                         fullWidth
+                        style={{ fontSize: applyReducedFontSize() }}
                     >
-                        <MenuItem value="Small">Small</MenuItem>
-                        <MenuItem value="Medium">Medium</MenuItem>
-                        <MenuItem value="Large">Large</MenuItem>
+                        <MenuItem value="Small" style={{ fontSize: applyReducedFontSize() }}>Small</MenuItem>
+                        <MenuItem value="Medium" style={{ fontSize: applyReducedFontSize() }}>Medium</MenuItem>
+                        <MenuItem value="Large" style={{ fontSize: applyReducedFontSize() }}>Large</MenuItem>
                     </Select>
-                    <Button variant="contained" color="primary" onClick={handleSaveFontSize} style={{ marginTop: '20px' }}>
+                    {/* <Button variant="contained" color="primary" onClick={handleSaveFontSize} style={{ marginTop: '20px', fontSize: applyReducedFontSize() }}>
                         Save
-                    </Button>
+                    </Button> */}
                 </>
             )}
-            <Typography variant="h5" gutterBottom>Your Posts:</Typography>
+            <Typography style={{ fontSize: applyReducedFontSize() }} gutterBottom>Your Posts:</Typography>
             <div style={{ margin: '20px 0' }}>
                 <Select
                     value={ordering}
                     onChange={handleSortChange}
                     fullWidth
+                    style={{ fontSize: applyReducedFontSize() }}
                 >
-                    <MenuItem value="title:asc">Title (A-Z)</MenuItem>
-                    <MenuItem value="title:desc">Title (Z-A)</MenuItem>
-                    <MenuItem value="created_at:asc">Date (Oldest First)</MenuItem>
-                    <MenuItem value="created_at:desc">Date (Newest First)</MenuItem>
+                    <MenuItem value="title:asc" style={{ fontSize: applyReducedFontSize() }}>Title (A-Z)</MenuItem>
+                    <MenuItem value="title:desc" style={{ fontSize: applyReducedFontSize() }}>Title (Z-A)</MenuItem>
+                    <MenuItem value="created_at:asc" style={{ fontSize: applyReducedFontSize() }}>Date (Oldest First)</MenuItem>
+                    <MenuItem value="created_at:desc" style={{ fontSize: applyReducedFontSize() }}>Date (Newest First)</MenuItem>
                 </Select>
             </div>
             <List>

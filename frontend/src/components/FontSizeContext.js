@@ -39,8 +39,16 @@ export const FontSizeProvider = ({ children }) => {
         }
     };
 
+    const applyReducedFontSize = () => {
+        switch (fontSize) {
+            case 'Small': return '12px';
+            case 'Large': return '30px';
+            default: return '16px';
+        }
+    };
+
     return (
-        <FontSizeContext.Provider value={{ fontSize, setFontSize: updateFontSize, applyFontSize }}>
+        <FontSizeContext.Provider value={{ fontSize, setFontSize: updateFontSize, applyFontSize, applyReducedFontSize }}>
             {!loading && children}
         </FontSizeContext.Provider>
     );

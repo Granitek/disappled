@@ -1,8 +1,10 @@
 import React from 'react'
 import { Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useFontSize } from './FontSizeContext';
 
 export default function UploadButton({ handleFileChange }) {
+    const { applyReducedFontSize } = useFontSize();
     const VisuallyHiddenInput = styled('input')({
         clip: 'rect(0 0 0 0)',
         clipPath: 'inset(50%)',
@@ -21,7 +23,8 @@ export default function UploadButton({ handleFileChange }) {
             role={undefined}
             variant="contained"
             tabIndex={-1}
-        // startIcon={<CloudUploadIcon />}
+            // startIcon={<CloudUploadIcon />}
+            style={{ fontSize: applyReducedFontSize() }}
         >
             Upload file
             <VisuallyHiddenInput type="file" onChange={handleFileChange} accept="audio/*" />

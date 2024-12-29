@@ -5,6 +5,7 @@ import { Button, TextField } from '@mui/material';
 import UploadButton from './UploadButton';
 import WakeWords from './WakeWords';
 import useSpeechRecognition from '../hooks/useSpeechRecognition';
+import { useFontSize } from './FontSizeContext';
 
 const AddPost = ({ onPostAdded }) => {
     const [title, setTitle] = useState('');
@@ -15,6 +16,7 @@ const AddPost = ({ onPostAdded }) => {
     const navigate = useNavigate();
     const [transcribing, setTranscribing] = useState(false);
     const [image, setImage] = useState(null);
+    const { applyFontSize, applyReducedFontSize } = useFontSize();
 
     const { startRecognition } = useSpeechRecognition();
 
@@ -113,11 +115,16 @@ const AddPost = ({ onPostAdded }) => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     margin="normal"
+                    InputProps={{
+                        style: {
+                            fontSize: applyReducedFontSize(),
+                        },
+                    }}
                 />
             </div>
             <div>
                 <UploadButton handleFileChange={handleFileChange} />
-                <Button variant="contained" onClick={handleTranscription} disabled={transcribing || !audioFile}>
+                <Button variant="contained" onClick={handleTranscription} disabled={transcribing || !audioFile} style={{ fontSize: applyReducedFontSize() }}>
                     {transcribing ? 'Transcribing...' : 'Transcribe Audio'}
                 </Button>
             </div>
@@ -126,6 +133,7 @@ const AddPost = ({ onPostAdded }) => {
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange}
+                    style={{ fontSize: applyReducedFontSize() }}
                 />
             </div>
             <div>
@@ -138,9 +146,14 @@ const AddPost = ({ onPostAdded }) => {
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     margin="normal"
+                    InputProps={{
+                        style: {
+                            fontSize: applyReducedFontSize(),
+                        },
+                    }}
                 />
             </div>
-            <Button variant="contained" type="submit" disabled={loading || !content || !title}>Add Post</Button>
+            <Button variant="contained" type="submit" disabled={loading || !content || !title} style={{ fontSize: applyReducedFontSize() }}>Add Post</Button>
             {loading && <p>Adding post...</p>}
             {error && <p>{error}</p>}
         </form>

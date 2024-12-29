@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardMedia, CardContent, Typography, CircularProgress, Select, MenuItem } from '@mui/material';
 import axios from './axiosConfig'
 import { useAuth } from '../hooks/useAuth';
+import { useFontSize } from './FontSizeContext';
 
 const Posts = () => {
     const [ordering, setOrdering] = useState('created_at');
     const { data: posts, loading, error, refetch } = useFetch(`http://localhost:8000/api/posts/?ordering=${ordering}`);
+    const { applyFontSize, applyReducedFontSize } = useFontSize();
 
     const navigate = useNavigate();
     const { user } = useAuth();
@@ -36,8 +38,8 @@ const Posts = () => {
     };
 
     return (
-        <div>
-            <Button variant="contained" onClick={() => navigate('/AddPosts')}>
+        <div style={{ fontSize: applyFontSize() }}>
+            <Button variant="contained" style={{ fontSize: applyReducedFontSize() }} onClick={() => navigate('/AddPosts')}>
                 Add New Post
             </Button>
             <div style={{ margin: '20px 0' }}>
@@ -45,16 +47,17 @@ const Posts = () => {
                     value={`${ordering}`}
                     onChange={handleSortChange}
                     fullWidth
+                    style={{ fontSize: applyReducedFontSize() }}
                 >
-                    <MenuItem value="title">Title (A-Z)</MenuItem>
-                    <MenuItem value="-title">Title (Z-A)</MenuItem>
-                    <MenuItem value="created_at">Date (Oldest First)</MenuItem>
-                    <MenuItem value="-created_at">Date (Newest First)</MenuItem>
+                    <MenuItem value="title" style={{ fontSize: applyReducedFontSize() }}>Title (A-Z)</MenuItem>
+                    <MenuItem value="-title" style={{ fontSize: applyReducedFontSize() }}>Title (Z-A)</MenuItem>
+                    <MenuItem value="created_at" style={{ fontSize: applyReducedFontSize() }}>Date (Oldest First)</MenuItem>
+                    <MenuItem value="-created_at" style={{ fontSize: applyReducedFontSize() }}>Date (Newest First)</MenuItem>
                 </Select>
             </div>
             {
                 posts.map(post => (
-                    <Card key={post.id} sx={{ maxWidth: 345 }} >
+                    <Card key={post.id} sx={{ maxWidth: 345 }}>
                         <CardMedia
                             component="img"
                             alt={post.title}
@@ -63,21 +66,21 @@ const Posts = () => {
                             sx={{ objectFit: 'cover' }}
                         />
                         <CardContent>
-                            <Typography gutterBottom variant="h5" component="div" style={{ cursor: 'pointer', color: 'blue' }}
+                            <Typography gutterBottom component="div" style={{ cursor: 'pointer', color: 'blue', fontSize: applyFontSize() }}
                                 onClick={() => navigate(`/PostDetail/${post.id}`)}>
                                 {post.title}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography color="text.secondary" style={{ fontSize: applyReducedFontSize() }}>
                                 {post.content}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            {/* <Typography color="text.secondary" style={{ fontSize: applyReducedFontSize() }}>
                                 {post.author}
-                            </Typography>
+                            </Typography> */}
                             {user && post.author === user.id && (<>
                                 <Button
                                     variant="outlined"
                                     onClick={() => handleEditClick(post.id)}
-                                    style={{ marginTop: '10px' }}
+                                    style={{ marginTop: '10px', fontSize: applyReducedFontSize() }}
                                 >
                                     Edit
                                 </Button>
@@ -85,7 +88,7 @@ const Posts = () => {
                                     variant="contained"
                                     color="secondary"
                                     onClick={() => handleDeleteClick(post.id)}
-                                    style={{ marginTop: '10px' }}
+                                    style={{ marginTop: '10px', fontSize: applyReducedFontSize() }}
                                 >
                                     Delete
                                 </Button>
