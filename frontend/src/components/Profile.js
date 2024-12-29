@@ -9,6 +9,11 @@ const Profile = () => {
     const [listenWakewords, setListenWakewords] = useState(false);
     const [fontSize, setFontSize] = useState('Medium');
     const [loading, setLoading] = useState(true);
+    const [sortedPosts, setSortedPosts] = useState(posts);
+    const [sortField, setSortField] = useState('title');
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [ordering, setOrdering] = useState('title:asc');
+
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -25,6 +30,19 @@ const Profile = () => {
 
         fetchUserProfile();
     }, []);
+
+    useEffect(() => {
+        const sorted = [...posts].sort((a, b) => {
+            let fieldA = a[sortField]?.toString().toLowerCase() || '';
+            let fieldB = b[sortField]?.toString().toLowerCase() || '';
+            if (sortDirection === 'asc') {
+                return fieldA.localeCompare(fieldB, undefined, { numeric: true });
+            } else {
+                return fieldB.localeCompare(fieldA, undefined, { numeric: true });
+            }
+        });
+        setSortedPosts(sorted);
+    }, [posts, sortField, sortDirection]);
 
     if (!user) {
         return <Navigate to="/Login" replace />;
@@ -53,6 +71,13 @@ const Profile = () => {
             default: return '20px';
         }
     }
+
+    const handleSortChange = (event) => {
+        const [field, direction] = event.target.value.split(':');
+        setSortField(field);
+        setSortDirection(direction);
+        setOrdering(event.target.value);
+    };
 
     return (
         <Container maxWidth="md" style={{ fontSize: applyFontSize() }}>
@@ -89,8 +114,20 @@ const Profile = () => {
                 </>
             )}
             <Typography variant="h5" gutterBottom>Your Posts:</Typography>
+            <div style={{ margin: '20px 0' }}>
+                <Select
+                    value={ordering}
+                    onChange={handleSortChange}
+                    fullWidth
+                >
+                    <MenuItem value="title:asc">Title (A-Z)</MenuItem>
+                    <MenuItem value="title:desc">Title (Z-A)</MenuItem>
+                    <MenuItem value="created_at:asc">Date (Oldest First)</MenuItem>
+                    <MenuItem value="created_at:desc">Date (Newest First)</MenuItem>
+                </Select>
+            </div>
             <List>
-                {posts.map(post => (
+                {sortedPosts.map(post => (
                     <ListItem key={post.id}>
                         <ListItemText primary={post.title} secondary={post.content} />
                     </ListItem>

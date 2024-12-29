@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',  # To dodajemy dla obsługi tokenów
     'dj_rest_auth',  # Jeśli jeszcze nie ma, dodajemy obsługę auth
     'django.contrib.sites',  # Potrzebne dla allauth (używane w dj-rest-auth)
+    'django_filters'
 ]
 
 MIDDLEWARE = [

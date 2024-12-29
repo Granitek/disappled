@@ -6,7 +6,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'author', 'image', 'image_url']
+        fields = ['id', 'title', 'content', 'author', 'image', 'image_url', 'created_at']
         read_only_fields = ['author']
 
     def get_image_url(self, obj):

@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useFetch from '../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, CardMedia, CardContent, Typography } from '@mui/material';
+import { Button, Card, CardMedia, CardContent, Typography, CircularProgress, Select, MenuItem } from '@mui/material';
 import axios from './axiosConfig'
 import { useAuth } from '../hooks/useAuth';
 
-const Posts = ({ onPostDeleted }) => {
-    const { data: posts, loading, error, refetch } = useFetch('http://localhost:8000/api/posts/');
+const Posts = () => {
+    const [ordering, setOrdering] = useState('created_at');
+    const { data: posts, loading, error, refetch } = useFetch(`http://localhost:8000/api/posts/?ordering=${ordering}`);
+
     const navigate = useNavigate();
     const { user } = useAuth();
 
-    if (loading) return <p>Loading posts...</p>;
+    if (loading) return <CircularProgress />;
     if (error) return <p>There was an error loading the posts.</p>;
 
     const handleEditClick = (id) => {
@@ -27,14 +29,32 @@ const Posts = ({ onPostDeleted }) => {
             });
     };
 
+    const handleSortChange = (event) => {
+        const field = event.target.value;
+        setOrdering(field);
+        refetch(`http://localhost:8000/api/posts/?ordering=${field}`);
+    };
+
     return (
         <div>
             <Button variant="contained" onClick={() => navigate('/AddPosts')}>
                 Add New Post
             </Button>
+            <div style={{ margin: '20px 0' }}>
+                <Select
+                    value={`${ordering}`}
+                    onChange={handleSortChange}
+                    fullWidth
+                >
+                    <MenuItem value="title">Title (A-Z)</MenuItem>
+                    <MenuItem value="-title">Title (Z-A)</MenuItem>
+                    <MenuItem value="created_at">Date (Oldest First)</MenuItem>
+                    <MenuItem value="-created_at">Date (Newest First)</MenuItem>
+                </Select>
+            </div>
             {
                 posts.map(post => (
-                    <Card sx={{ maxWidth: 345 }} >
+                    <Card key={post.id} sx={{ maxWidth: 345 }} >
                         <CardMedia
                             component="img"
                             alt={post.title}

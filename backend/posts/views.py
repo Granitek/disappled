@@ -5,6 +5,8 @@ from .permissions import IsAuthorOrReadOnly
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .services import generate_image_from_title
 import os
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 # services.py
 # from django.http import JsonResponse
 # from django.views.decorators.csrf import csrf_exempt
@@ -16,6 +18,10 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
+    ordering_fields = ['title', 'created_at']
+    ordering = ['-created_at']
+
 
     #przypisuje zalogowanego użytkownika jako autora
     # def perform_create(self, serializer):
