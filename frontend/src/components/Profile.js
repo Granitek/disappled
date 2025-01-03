@@ -3,7 +3,7 @@ import axios from './axiosConfig';
 import { Container, Typography, List, ListItem, ListItemText, Switch, FormControlLabel, MenuItem, Select, Button, CircularProgress } from '@mui/material';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { useFontSize } from './FontSizeContext';
+import { useFontSize } from '../hooks/useFontSize';
 
 const Profile = () => {
     const { user, posts } = useAuth();

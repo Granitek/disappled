@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { useFontSize } from './FontSizeContext';
+import { useFontSize } from '../hooks/useFontSize';
 
 export default function UploadButton({ handleFileChange }) {
     const { applyReducedFontSize } = useFontSize();

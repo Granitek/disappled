@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from './axiosConfig';
 import { Container, Typography, Button, CircularProgress } from '@mui/material';
 import { useAuth } from '../hooks/useAuth';
-import { useFontSize } from './FontSizeContext';
+import { useFontSize } from '../hooks/useFontSize';
 
 const PostDetail = () => {
     const { id } = useParams();

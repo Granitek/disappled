@@ -1,6 +1,6 @@
 import React from "react";
 import TextToSpeech from "./TextToSpeech";
-import { useFontSize } from "./FontSizeContext";
+import { useFontSize } from '../hooks/useFontSize';
 import { Typography } from "@mui/material";
 
 const Instructions = () => {

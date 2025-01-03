@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardMedia, CardContent, Typography, CircularProgress, Select, MenuItem } from '@mui/material';
 import axios from './axiosConfig'
 import { useAuth } from '../hooks/useAuth';
-import { useFontSize } from './FontSizeContext';
+import { useFontSize } from '../hooks/useFontSize';
 
 const Posts = () => {
     const [ordering, setOrdering] = useState('created_at');
@@ -38,66 +38,126 @@ const Posts = () => {
     };
 
     return (
-        <div style={{ fontSize: applyFontSize() }}>
-            <Button variant="contained" style={{ fontSize: applyReducedFontSize() }} onClick={() => navigate('/AddPosts')}>
+        <div style={{ fontSize: applyFontSize(), padding: '20px' }}>
+            {user && (<Button
+                variant="contained"
+                sx={{
+                    fontSize: applyReducedFontSize(),
+                    mb: 3,
+                    textTransform: 'none',
+                }}
+                onClick={() => navigate('/AddPosts')}
+            >
                 Add New Post
-            </Button>
-            <div style={{ margin: '20px 0' }}>
+            </Button>)}
+            <div style={{ marginBottom: '20px' }}>
                 <Select
                     value={`${ordering}`}
                     onChange={handleSortChange}
                     fullWidth
-                    style={{ fontSize: applyReducedFontSize() }}
+                    sx={{ fontSize: applyReducedFontSize() }}
                 >
-                    <MenuItem value="title" style={{ fontSize: applyReducedFontSize() }}>Title (A-Z)</MenuItem>
-                    <MenuItem value="-title" style={{ fontSize: applyReducedFontSize() }}>Title (Z-A)</MenuItem>
-                    <MenuItem value="created_at" style={{ fontSize: applyReducedFontSize() }}>Date (Oldest First)</MenuItem>
-                    <MenuItem value="-created_at" style={{ fontSize: applyReducedFontSize() }}>Date (Newest First)</MenuItem>
+                    <MenuItem value="title" sx={{ fontSize: applyReducedFontSize() }}>
+                        Title (A-Z)
+                    </MenuItem>
+                    <MenuItem value="-title" sx={{ fontSize: applyReducedFontSize() }}>
+                        Title (Z-A)
+                    </MenuItem>
+                    <MenuItem value="created_at" sx={{ fontSize: applyReducedFontSize() }}>
+                        Date (Oldest First)
+                    </MenuItem>
+                    <MenuItem value="-created_at" sx={{ fontSize: applyReducedFontSize() }}>
+                        Date (Newest First)
+                    </MenuItem>
                 </Select>
             </div>
-            {
-                posts.map(post => (
-                    <Card key={post.id} sx={{ maxWidth: 345 }}>
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+                    gap: '20px',
+                }}
+            >
+                {posts.map((post) => (
+                    <Card
+                        key={post.id}
+                        sx={{
+                            maxWidth: 345,
+                            boxShadow: 3,
+                            borderRadius: 2,
+                            overflow: 'hidden',
+                        }}
+                    >
                         <CardMedia
                             component="img"
                             alt={post.title}
-                            height="140"
+                            height="180"
                             image={post.image_url || 'default_image.jpg'}
                             sx={{ objectFit: 'cover' }}
                         />
                         <CardContent>
-                            <Typography gutterBottom component="div" style={{ cursor: 'pointer', color: 'blue', fontSize: applyFontSize() }}
-                                onClick={() => navigate(`/PostDetail/${post.id}`)}>
+                            <Typography
+                                gutterBottom
+                                component="h2"
+                                sx={{
+                                    cursor: 'pointer',
+                                    color: 'primary.main',
+                                    fontWeight: 'bold',
+                                    fontSize: applyFontSize(),
+                                    '&:hover': { textDecoration: 'underline' },
+                                }}
+                                onClick={() => navigate(`/PostDetail/${post.id}`)}
+                            >
                                 {post.title}
                             </Typography>
-                            <Typography color="text.secondary" style={{ fontSize: applyReducedFontSize() }}>
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{
+                                    fontSize: applyReducedFontSize(),
+                                    mb: 2,
+                                    maxHeight: '3.6em',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 3,
+                                    WebkitBoxOrient: 'vertical',
+                                }}
+                            >
                                 {post.content}
                             </Typography>
-                            {/* <Typography color="text.secondary" style={{ fontSize: applyReducedFontSize() }}>
-                                {post.author}
-                            </Typography> */}
-                            {user && post.author === user.id && (<>
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => handleEditClick(post.id)}
-                                    style={{ marginTop: '10px', fontSize: applyReducedFontSize() }}
-                                >
-                                    Edit
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={() => handleDeleteClick(post.id)}
-                                    style={{ marginTop: '10px', fontSize: applyReducedFontSize() }}
-                                >
-                                    Delete
-                                </Button>
-                            </>)}
+                            {user && post.author === user.id && (
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        onClick={() => handleEditClick(post.id)}
+                                        sx={{
+                                            fontSize: applyReducedFontSize(),
+                                            textTransform: 'none',
+                                        }}
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        color="error"
+                                        size="small"
+                                        onClick={() => handleDeleteClick(post.id)}
+                                        sx={{
+                                            fontSize: applyReducedFontSize(),
+                                            textTransform: 'none',
+                                        }}
+                                    >
+                                        Delete
+                                    </Button>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
-                ))
-            }
-        </div >
+                ))}
+            </div>
+        </div>
     );
 };
 

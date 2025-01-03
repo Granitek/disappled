@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-// Ustawienia globalne dla Axios
-axios.defaults.withCredentials = true; // Dołącz ciasteczka do każdego żądania
-axios.defaults.baseURL = 'http://localhost:8000'; // Ustaw podstawowy URL
+axios.defaults.withCredentials = true; // Ciasteczka w każdym żądaniu
+axios.defaults.baseURL = 'http://localhost:8000'; // URL serwera
 
 export default axios;

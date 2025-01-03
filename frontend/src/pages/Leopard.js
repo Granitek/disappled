@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Box, Card, Typography, Divider, CardContent, Button } from '@mui/material';
 import UploadButton from '../components/UploadButton';
-import { useFontSize } from '../components/FontSizeContext';
+import { useFontSize } from '../hooks/useFontSize';
 
 const Leopard = () => {
     const [selectedFile, setSelectedFile] = useState(null);

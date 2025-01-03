@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from './axiosConfig';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, TextField, CircularProgress, } from '@mui/material';
+import { Button, TextField, CircularProgress, Card, CardContent, Box, Typography } from '@mui/material';
 import UploadButton from './UploadButton';
 import WakeWords from './WakeWords';
 import { useAuth } from '../hooks/useAuth';
 import useSpeechRecognition from "../hooks/useSpeechRecognition"
-import { useFontSize } from './FontSizeContext';
+import { useFontSize } from '../hooks/useFontSize';
 
 const EditPost = () => {
     const { id } = useParams();
@@ -20,6 +20,7 @@ const EditPost = () => {
     const { user } = useAuth();
     const [imageFile, setImageFile] = useState(null);
     const { applyFontSize, applyReducedFontSize } = useFontSize();
+    const [previewImage, setPreviewImage] = useState(null);
 
     const { startRecognition } = useSpeechRecognition();
 
@@ -36,6 +37,7 @@ const EditPost = () => {
                 } else {
                     setTitle(response.data.title);
                     setContent(response.data.content);
+                    setPreviewImage(response.data.image_url);
                 }
             } catch (err) {
                 setError('Error fetching post data');
@@ -125,59 +127,169 @@ const EditPost = () => {
     if (loading) return <CircularProgress />;
     if (error) return <p>{error}</p>;
 
-    return (<>
-        <WakeWords onWakeWordDetected={handleWakeWordDetected} />
-        <form onSubmit={handleUpdate}>
-            <div>
-                <TextField
-                    label="Title"
-                    variant="outlined"
-                    fullWidth
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    margin="normal"
-                    InputProps={{
-                        style: {
+    // return (<>
+    //     <WakeWords onWakeWordDetected={handleWakeWordDetected} />
+    //     <form onSubmit={handleUpdate}>
+    //         <div>
+    //             <TextField
+    //                 label="Title"
+    //                 variant="outlined"
+    //                 fullWidth
+    //                 value={title}
+    //                 onChange={(e) => setTitle(e.target.value)}
+    //                 margin="normal"
+    //                 InputProps={{
+    //                     style: {
+    //                         fontSize: applyReducedFontSize(),
+    //                     },
+    //                 }}
+    //             />
+    //         </div>
+    //         <UploadButton handleFileChange={handleFileChange} />
+    //         <Button variant="contained" onClick={handleTranscription} disabled={transcribing || !audioFile} style={{ fontSize: applyReducedFontSize() }}>
+    //             {transcribing ? 'Transcribing...' : 'Transcribe Audio'}
+    //         </Button>
+    //         <div>
+    //             <input
+    //                 type="file"
+    //                 accept="image/*"
+    //                 onChange={handleImageFileChange}
+    //                 style={{ fontSize: applyReducedFontSize() }}
+    //             />
+    //         </div>
+    //         <div>
+    //             <TextField
+    //                 label="Content"
+    //                 variant="outlined"
+    //                 fullWidth
+    //                 multiline
+    //                 rows={4}
+    //                 value={content}
+    //                 onChange={(e) => setContent(e.target.value)}
+    //                 margin="normal"
+    //                 InputProps={{
+    //                     style: {
+    //                         fontSize: applyReducedFontSize(),
+    //                     },
+    //                 }}
+    //             />
+    //         </div>
+    //         <Button type="submit" variant="contained" color="primary" disabled={loading || !content || !title} style={{ fontSize: applyReducedFontSize() }}>
+    //             Update Post
+    //         </Button>
+    //     </form>
+    // </>
+    return (
+        <Card sx={{ borderRadius: 2, boxShadow: 3, p: 3, maxWidth: "sm", margin: "auto", mt: 5 }}>
+            <CardContent>
+                <WakeWords onWakeWordDetected={handleWakeWordDetected} />
+                <Typography variant="h5" gutterBottom align="center">
+                    Update Post
+                </Typography>
+                <form onSubmit={handleUpdate}>
+                    <Box mb={2}>
+                        <TextField
+                            label="Title"
+                            variant="outlined"
+                            fullWidth
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            margin="normal"
+                            InputProps={{
+                                style: { fontSize: applyReducedFontSize() },
+                            }}
+                        />
+                    </Box>
+                    <Box mb={2} display="flex" alignItems="center" gap={2}>
+                        <UploadButton handleFileChange={handleFileChange} />
+                        <Button
+                            variant="contained"
+                            onClick={handleTranscription}
+                            disabled={transcribing || !audioFile}
+                            sx={{
+                                textTransform: "none",
+                                fontSize: applyReducedFontSize(),
+                                py: 1,
+                            }}
+                        >
+                            {transcribing ? "Transcribing..." : "Transcribe Audio"}
+                        </Button>
+                    </Box>
+                    <Box mb={2}>
+                        <Button
+                            variant="outlined"
+                            component="label"
+                            sx={{
+                                fontSize: applyReducedFontSize(),
+                                py: 1,
+                                textTransform: "none",
+                            }}
+                        >
+                            Upload Image
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (file) {
+                                        handleImageFileChange(e);
+                                        const reader = new FileReader();
+                                        reader.onload = () => setPreviewImage(reader.result);
+                                        reader.readAsDataURL(file);
+                                    }
+                                }}
+                                hidden
+                            />
+                        </Button>
+                    </Box>
+                    {previewImage && (
+                        <Box mb={2} textAlign="center">
+                            <img
+                                src={previewImage}
+                                alt="Uploaded Preview"
+                                style={{
+                                    maxWidth: "100%",
+                                    height: "auto",
+                                    borderRadius: "8px",
+                                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                                }}
+                            />
+                        </Box>
+                    )}
+                    <Box mb={2}>
+                        <TextField
+                            label="Content"
+                            variant="outlined"
+                            fullWidth
+                            multiline
+                            rows={4}
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            margin="normal"
+                            InputProps={{
+                                style: { fontSize: applyReducedFontSize() },
+                            }}
+                        />
+                    </Box>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        disabled={loading || !content || !title}
+                        fullWidth
+                        sx={{
                             fontSize: applyReducedFontSize(),
-                        },
-                    }}
-                />
-            </div>
-            <UploadButton handleFileChange={handleFileChange} />
-            <Button variant="contained" onClick={handleTranscription} disabled={transcribing || !audioFile} style={{ fontSize: applyReducedFontSize() }}>
-                {transcribing ? 'Transcribing...' : 'Transcribe Audio'}
-            </Button>
-            <div>
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageFileChange}
-                    style={{ fontSize: applyReducedFontSize() }}
-                />
-            </div>
-            <div>
-                <TextField
-                    label="Content"
-                    variant="outlined"
-                    fullWidth
-                    multiline
-                    rows={4}
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    margin="normal"
-                    InputProps={{
-                        style: {
-                            fontSize: applyReducedFontSize(),
-                        },
-                    }}
-                />
-            </div>
-            <Button type="submit" variant="contained" color="primary" disabled={loading || !content || !title} style={{ fontSize: applyReducedFontSize() }}>
-                Update Post
-            </Button>
-        </form>
-    </>
+                            py: 1.2,
+                            textTransform: "none",
+                        }}
+                    >
+                        {loading ? "Updating Post..." : "Update Post"}
+                    </Button>
+                </form>
+            </CardContent>
+        </Card>
     );
+    // );
 };
 
 export default EditPost;

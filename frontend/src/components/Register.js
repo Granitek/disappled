@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Container, Typography, Checkbox, FormControlLabel } from '@mui/material';
+import { TextField, Button, Container, Typography, Checkbox, FormControlLabel, Card, CardContent, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
@@ -15,6 +15,14 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        console.log({
+            username: username,
+            email: email,
+            password: password,
+            listen_to_wakewords: listenWakewords  // Zawiera stan listenWakewords
+        });
+
         axios.post('http://localhost:8000/users/register/', {
             username: username,
             email: email,
@@ -32,44 +40,85 @@ const Register = () => {
     };
 
     return (
-        <Container maxWidth="sm">
-            <Typography variant="h4" gutterBottom>Register</Typography>
-            {success && <Typography color="primary">Registration successful! You can now log in.</Typography>}
-            {error && <Typography color="error">{error}</Typography>}
-            <form onSubmit={handleSubmit}>
-                <TextField
-                    label="Username"
-                    fullWidth
-                    margin="normal"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
-                <TextField
-                    label="Email"
-                    fullWidth
-                    margin="normal"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <TextField
-                    label="Password"
-                    type="password"
-                    fullWidth
-                    margin="normal"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={listenWakewords}
-                            onChange={(e) => setListenWakewords(e.target.checked)}
+        <Container maxWidth="sm" sx={{ mt: 8 }}>
+            <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
+                <CardContent>
+                    <Typography variant="h4" gutterBottom align="center">
+                        Register
+                    </Typography>
+                    {success && (
+                        <Typography color="primary" align="center" sx={{ mb: 2 }}>
+                            Registration successful! You can now log in.
+                        </Typography>
+                    )}
+                    {error && (
+                        <Typography color="error" align="center" sx={{ mb: 2 }}>
+                            {error}
+                        </Typography>
+                    )}
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            label="Username"
+                            fullWidth
+                            margin="normal"
+                            variant="outlined"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                         />
-                    }
-                    label="Enable wake word detection by default"
-                />
-                <Button variant="contained" color="primary" type="submit" fullWidth>Register</Button>
-            </form>
+                        <TextField
+                            label="Email"
+                            fullWidth
+                            margin="normal"
+                            variant="outlined"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <TextField
+                            label="Password"
+                            type="password"
+                            fullWidth
+                            margin="normal"
+                            variant="outlined"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={listenWakewords}
+                                    onChange={(e) => setListenWakewords(e.target.checked)}
+                                />
+                            }
+                            label="Enable wake word detection by default"
+                            sx={{ mt: 2 }}
+                        />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            fullWidth
+                            sx={{
+                                mt: 3,
+                                py: 1.2,
+                                fontSize: "1rem",
+                                textTransform: "none",
+                                boxShadow: 2,
+                            }}
+                        >
+                            Register
+                        </Button>
+                    </form>
+                    <Box mt={2} textAlign="center">
+                        <Typography variant="body2">
+                            Already have an account?{" "}
+                            <a href="/login" style={{ textDecoration: "none", color: "#1976d2" }}>
+                                Log in here
+                            </a>
+                            .
+                        </Typography>
+                    </Box>
+                </CardContent>
+            </Card>
         </Container>
     );
 };

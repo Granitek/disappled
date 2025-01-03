@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
-import { useFontSize } from "./FontSizeContext"
+import { useFontSize } from '../hooks/useFontSize';
 
 const TextToSpeech = ({ text }) => {
     const [isSpeaking, setIsSpeaking] = useState(false);

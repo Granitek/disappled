@@ -31,13 +31,11 @@ class PostViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         title = self.request.data.get("title")
         image = self.request.data.get("image")
-
-        # Generowanie obrazu
-        # if title:
+        
+        # Generowanie obrazu jeśli obraz nie został dodany przez użytkownika
         if not image and title:
             try:
                 image_data = generate_image_from_title(title)
-                # image_path = f"generated_images/{title.replace(' ', '_')}.png"
                 relative_image_path = f"generated_images/{title.replace(' ', '_')}.png"
                 image_path = os.path.join(settings.MEDIA_ROOT, relative_image_path)
                 # Zapis obrazu w folderze "media"
@@ -50,7 +48,7 @@ class PostViewSet(viewsets.ModelViewSet):
             except Exception as e:
                 raise ValueError(f"Image generation failed: {str(e)}")
         else:
-            serializer.save(author=self.request.user)  # Bez obrazu, jeśli brak tytułu
+            serializer.save(author=self.request.user)
 
     def get_queryset(self):
         return Post.objects.all()

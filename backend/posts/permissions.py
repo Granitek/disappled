@@ -6,9 +6,7 @@ class IsAuthorOrReadOnly(BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        # Zezwól na odczyt dla wszystkich
-        if request.method in ['GET', 'HEAD', 'OPTIONS']:
+        if request.method in ['GET', 'HEAD', 'OPTIONS']: # Opcje dla użytkowników nie będacych autorem posta
             return True
 
-        # Zezwól na edycję i usunięcie tylko, jeśli użytkownik jest autorem postu
-        return obj.author == request.user
+        return obj.author == request.user # Zezwala na modyfikację posta tylko dla autora
