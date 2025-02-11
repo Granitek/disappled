@@ -35,6 +35,7 @@ const TextToSpeech = ({ text }) => {
     return (
         <div>
             <Button
+                id="play-instructions-btn"
                 onClick={handleSpeak}
                 disabled={isSpeaking}
                 variant="contained"
@@ -44,7 +45,7 @@ const TextToSpeech = ({ text }) => {
 
             </Button>
             {isSpeaking && (
-                <Button variant="outlined" color="secondary" onClick={handleStop} style={{ fontSize: applyReducedFontSize() }}>
+                <Button id="stop-instructions-btn" variant="outlined" color="secondary" onClick={handleStop} style={{ fontSize: applyReducedFontSize() }}>
                     Stop
                 </Button>
             )}

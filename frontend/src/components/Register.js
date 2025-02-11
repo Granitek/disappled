@@ -35,7 +35,7 @@ const Register = () => {
                 navigate('/login')
             })
             .catch(error => {
-                setError('Registration failed. Please check your details.');
+                setError('Registration failed. Make sure your e-mail is correct.');
             });
     };
 

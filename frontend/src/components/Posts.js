@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import useFetch from '../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, CardMedia, CardContent, Typography, CircularProgress, Select, MenuItem } from '@mui/material';
+import { Button, Card, CardMedia, CardContent, Typography, CircularProgress, Select, MenuItem, InputLabel } from '@mui/material';
 import axios from './axiosConfig'
 import { useAuth } from '../hooks/useAuth';
 import { useFontSize } from '../hooks/useFontSize';
@@ -51,10 +51,12 @@ const Posts = () => {
                 Add New Post
             </Button>)}
             <div style={{ marginBottom: '20px' }}>
+                <InputLabel id="sort-label">Sort by</InputLabel>
                 <Select
                     value={`${ordering}`}
                     onChange={handleSortChange}
                     fullWidth
+                    labelId="sort-label"
                     sx={{ fontSize: applyReducedFontSize() }}
                 >
                     <MenuItem value="title" sx={{ fontSize: applyReducedFontSize() }}>

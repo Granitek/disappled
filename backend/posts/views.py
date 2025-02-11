@@ -32,7 +32,11 @@ class PostViewSet(viewsets.ModelViewSet):
         title = self.request.data.get("title")
         image = self.request.data.get("image")
         
+        # instance = serializer.instance
+        # existing_image = instance.image
+
         # Generowanie obrazu jeśli obraz nie został dodany przez użytkownika
+        # if not image and not existing_image and title:
         if not image and title:
             try:
                 image_data = generate_image_from_title(title)
@@ -58,8 +62,12 @@ class PostViewSet(viewsets.ModelViewSet):
         title = self.request.data.get("title")
         image = self.request.data.get("image")
         
+        instance = serializer.instance
+        existing_image = instance.image
+
         # if title:
-        if not image and title:
+        # if not image and title:
+        if not image and not existing_image and title:
             try:
                 image_data = generate_image_from_title(title)
                 relative_image_path = f"generated_images/{title.replace(' ', '_')}.png"

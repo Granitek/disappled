@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import axios from './axiosConfig';
+import axios from '../components/axiosConfig';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Typography, Box, CircularProgress, Card, CardContent } from '@mui/material';
-import UploadButton from './UploadButton';
-import WakeWords from './WakeWords';
+import UploadButton from '../components/UploadButton';
+import WakeWords from '../components/WakeWords';
 import useSpeechRecognition from '../hooks/useSpeechRecognition';
 import { useFontSize } from '../hooks/useFontSize';
+import Instructions from '../components/Instruction';
 
 const AddPost = ({ onPostAdded }) => {
     const [title, setTitle] = useState('');
@@ -17,7 +18,7 @@ const AddPost = ({ onPostAdded }) => {
     const [transcribing, setTranscribing] = useState(false);
     const [image, setImage] = useState(null);
     const [imageView, setImageView] = useState(null);
-    const { applyFontSize, applyReducedFontSize } = useFontSize();
+    const { applyReducedFontSize } = useFontSize();
 
     const { startRecognition } = useSpeechRecognition();
 
@@ -94,11 +95,10 @@ const AddPost = ({ onPostAdded }) => {
                 setAudioFile(null);
                 setImage(null);
                 setImageView(null);
-                navigate('/Posts');
+                navigate('/profile');
             })
             .catch(err => {
-                setError("There was an error adding the post.");
-                console.error("There was an error adding the post!", err);
+                setError("Generating an image based on title is currently unavailable. Please try again in 30 seconds.");
             })
             .finally(() => {
                 setLoading(false);
@@ -114,7 +114,7 @@ const AddPost = ({ onPostAdded }) => {
     };
 
     return (<>
-
+        <Instructions />
         <Card sx={{ borderRadius: 2, boxShadow: 3, p: 3, maxWidth: "sm", margin: "auto", mt: 5 }}>
             <CardContent>
                 <WakeWords onWakeWordDetected={handleWakeWordDetected} />
@@ -162,6 +162,7 @@ const AddPost = ({ onPostAdded }) => {
                         >
                             Upload Image
                             <input
+                                id="add-image-btn"
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
@@ -199,6 +200,7 @@ const AddPost = ({ onPostAdded }) => {
                         />
                     </Box>
                     <Button
+                        id="add-post-btn"
                         variant="contained"
                         type="submit"
                         disabled={loading || !content || !title}
@@ -223,7 +225,7 @@ const AddPost = ({ onPostAdded }) => {
                     </Typography>
                 )}
             </CardContent>
-        </Card></>
+        </Card ></>
     );
 };
 

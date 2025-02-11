@@ -19,6 +19,7 @@ export default function UploadButton({ handleFileChange }) {
 
     return (
         <Button
+            id="add-file-btn"
             component="label"
             role={undefined}
             variant="contained"

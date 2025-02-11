@@ -3,13 +3,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Leopard from './pages/Leopard';
-import Posts from './components/Posts';
-import AddPost from './components/AddPost';
-import EditPost from './components/EditPost';
-import Login from './components/Login';
-import Logout from './components/Logout';
+// import Posts from './components/Posts';
+import AddPost from './pages/AddPost';
+import EditPost from './pages/EditPost';
+import Login from './pages/Login';
+import Logout from './pages/Logout';
 import Register from './components/Register';
-import Profile from './components/Profile';
+import Profile from './pages/Profile';
 import { AuthProvider } from './hooks/useAuth';
 import ProtectedRoute from './components/ProtectedRoute';
 import PostDetail from './components/PostDetail';
@@ -56,13 +56,13 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/Posts"
               element={
                 <ProtectedRoute>
                   <Posts />
                 </ProtectedRoute>
-              } />
+              } /> */}
           </Routes>
         </Layout>
       </Router>

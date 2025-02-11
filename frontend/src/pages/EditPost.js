@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import axios from './axiosConfig';
+import axios from '../components/axiosConfig';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, TextField, CircularProgress, Card, CardContent, Box, Typography } from '@mui/material';
-import UploadButton from './UploadButton';
-import WakeWords from './WakeWords';
+import UploadButton from '../components/UploadButton';
+import WakeWords from '../components/WakeWords';
 import { useAuth } from '../hooks/useAuth';
 import useSpeechRecognition from "../hooks/useSpeechRecognition"
 import { useFontSize } from '../hooks/useFontSize';
+import Instructions from '../components/Instruction';
 
 const EditPost = () => {
     const { id } = useParams();
@@ -19,7 +20,7 @@ const EditPost = () => {
     const [transcribing, setTranscribing] = useState(false);
     const { user } = useAuth();
     const [imageFile, setImageFile] = useState(null);
-    const { applyFontSize, applyReducedFontSize } = useFontSize();
+    const { applyReducedFontSize } = useFontSize();
     const [previewImage, setPreviewImage] = useState(null);
 
     const { startRecognition } = useSpeechRecognition();
@@ -33,7 +34,7 @@ const EditPost = () => {
 
                 if (response.data.author !== user.id) {
                     // Jeśli użytkownik nie jest autorem posta, przekieruj
-                    navigate('/posts');
+                    navigate('/profile');
                 } else {
                     setTitle(response.data.title);
                     setContent(response.data.content);
@@ -77,7 +78,7 @@ const EditPost = () => {
 
         axios.put(`/api/posts/${id}/`, formData)
             .then(() => {
-                navigate('/Posts');
+                navigate('/profile');
             })
             .catch(error => {
                 setError('Error updating post');
@@ -179,7 +180,7 @@ const EditPost = () => {
     //         </Button>
     //     </form>
     // </>
-    return (
+    return (<><Instructions />
         <Card sx={{ borderRadius: 2, boxShadow: 3, p: 3, maxWidth: "sm", margin: "auto", mt: 5 }}>
             <CardContent>
                 <WakeWords onWakeWordDetected={handleWakeWordDetected} />
@@ -201,7 +202,7 @@ const EditPost = () => {
                         />
                     </Box>
                     <Box mb={2} display="flex" alignItems="center" gap={2}>
-                        <UploadButton handleFileChange={handleFileChange} />
+                        <UploadButton id="add-file-btn" handleFileChange={handleFileChange} />
                         <Button
                             variant="contained"
                             onClick={handleTranscription}
@@ -227,6 +228,7 @@ const EditPost = () => {
                         >
                             Upload Image
                             <input
+                                id="add-image-btn"
                                 type="file"
                                 accept="image/*"
                                 onChange={(e) => {
@@ -272,6 +274,7 @@ const EditPost = () => {
                         />
                     </Box>
                     <Button
+                        id="add-post-btn"
                         type="submit"
                         variant="contained"
                         color="primary"
@@ -288,7 +291,7 @@ const EditPost = () => {
                 </form>
             </CardContent>
         </Card>
-    );
+    </>);
     // );
 };
 
