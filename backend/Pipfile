@@ -9,7 +9,11 @@ pvleopard = "*"
 django-environ = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
-pvcheetah = "*"
+djangorestframework-simplejwt = "*"
+dj-rest-auth = "*"
+django-filter = "*"
+requests = "*"
+pillow = "*"
 
 [dev-packages]
 
